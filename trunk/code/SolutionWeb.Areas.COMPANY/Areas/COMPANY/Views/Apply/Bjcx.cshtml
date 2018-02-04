@@ -1,0 +1,204 @@
+﻿
+@{
+    ViewBag.Title = "办件查询";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+<script type="text/javascript">
+    var openIndex = 0;
+    var table = layui.table;
+    function loadInit() {
+        table.render({
+            elem: '#bjcxlist',
+            url: '/api/COMPANY/Apply/List',
+            method: 'post',
+            page: {
+                layout: ['count', 'prev', 'page', 'next'],
+                theme: '#1E9FFF',
+                groups: 5,
+                prev: '上一页',
+                next: '下一页'
+            },
+            request: {
+                limitName: 'rows' 
+            },
+            response: {
+                countName: 'total',
+                dataName: 'rows'
+            },
+            width:760,
+            cols: [[
+             //{ field: 'SID', width: 100, title: 'ID' },
+              { field: 'APPLY_ITEM_TYPE', width: 80, align: 'center', title: '类别' },
+              { field: 'APPLY_ITEM_NAME', width: 300, title: '项目名称' },
+              {field: 'STATUS_NAME', width: 100, align: 'center', title: '当前状态',
+                 templet: function (d) {
+                  if (d.STATUS_CODE < "C02") {
+                      return '办理中';
+                      } else {
+                      return '办结';
+                      }
+                  }
+              },
+              {
+                  field: 'CREATE_DT', width: 120, align: 'center', title: '受理日期',
+                  templet: function (d) {
+                      return d.CREATE_DT.split('T')[0];
+                  }
+              },
+              { fixed: 'right', title: '操作', align: 'left', toolbar: '#barDemo' }
+            ]],
+            id: 'searchId'
+        });
+        var active = {
+            reload: function(){
+                table.reload('searchId', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                  ,where: {
+                      APPLY_ITEM_TYPE: $('#item_type').val(),
+                      APPLY_ITEM_NAME: $('#item_name').val()
+                  }
+                });
+            }
+        };
+  
+        $('.searchDiv .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //监听工具条
+        table.on('tool(bjcxlist)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if (layEvent === 'detail') { //查看
+                layer.open({
+                    type: 2,
+                    title: data.APPLY_ITEM_TYPE+"-"+data.APPLY_ITEM_NAME,
+                    shadeClose: true,
+                    shade: 0.5,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['900px', '620px'],
+                    content: "/COMPANY/Apply/Sqxx/" + data.SID
+                });
+            } else
+                if (layEvent === 'passed') { //审批
+                    layer.open({
+                        type: 2,
+                        title: data.APPLY_ITEM_TYPE + "-" + data.APPLY_ITEM_NAME,
+                        shadeClose: true,
+                        shade: 0.5,
+                        maxmin: true, //开启最大化最小化按钮
+                        area: ['890px', '600px'],
+                        content: "/COMPANY/Apply/Sqpass/" + data.SID
+                    });
+                }
+            else if (layEvent === 'del') { //删除
+                layer.confirm('确定要删除吗?', function (index) {
+
+                    $.ajax({
+                        url: '/api/COMPANY/Apply/Del',
+                        type: "POST",
+                        data: { "SID": data.SID },
+                        dataType: "JSON",
+                        success: function succCallback(result, textStatus) {//回调成功,
+                            if (result.Statu == "1") {
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                layer.alert(result.Msg, { title: '删除成功', icon: 1 });
+                            } else {
+                                layer.alert(result.Msg, { title: '删除失败', icon: 2 });
+                            }
+                        },
+                        complete: function () {
+                            layer.close(index);
+                        }
+                    });
+
+                });
+            }
+            else if (layEvent === 'over') { //确认收款
+                layer.confirm('您确认到款了吗?', function (index) {
+
+                    $.ajax({
+                        url: '/api/COMPANY/Apply/Over',
+                        type: "POST",
+                        data: { "SID": data.SID },
+                        dataType: "JSON",
+                        success: function succCallback(result, textStatus) {//回调成功,
+                            if (result.Statu == "1") {
+                                reloadTable();
+                                layer.alert(result.Msg, { title: '确认成功', icon: 1 });
+                            } else {
+                                layer.alert(result.Msg, { title: '确认失败', icon: 2 });
+                            }
+                        },
+                        complete: function () {
+                            layer.close(index);
+                        }
+                    });
+
+                });
+            } else if (layEvent === 'edit') { //编辑
+                location.href = "/COMPANY/Apply/Zxsq?sid=" + data.SID;
+            } else if (layEvent === 'money') { //帐号
+                openIndex = layer.open({
+                    type: 2,
+                    title: "申请拨款-" + data.APPLY_ITEM_TYPE + "-" + data.APPLY_ITEM_NAME,
+                    shadeClose: true,
+                    shade: 0.5,
+                    maxmin: false, //开启最大化最小化按钮
+                    area: ['640px', '500px'],
+                    content: "/COMPANY/Apply/Bankxx/" + data.SID
+                });
+                //console.info(openIndex);
+            }
+        });
+    }
+
+    function loadForm(form) {
+        form.render('select');
+    }
+    function reloadTable() {
+        table.reload('searchId', {
+            url: '/api/COMPANY/Apply/List'
+            , where: { "APPLY_ITEM_TYPE": $('#item_type').val(), "APPLY_ITEM_NAME": $('#item_name').val() } //设定异步数据接口的额外参数
+        });
+    }
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">申请表</a>
+    @*<a class="layui-btn layui-btn-xs" lay-event="passed">审批表</a>*@
+        {{#  if(d.APPLY_STATUS == "驳回"){ }}
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="edit">补正材料</a>
+        {{#  } }}
+    @*<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>*@
+
+    <!-- 这里同样支持 laytpl 语法，如： -->
+    {{#  if(d.STATUS_CODE == "D01"){ }}
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="money">企业请拨</a>
+    {{#  } }} 
+    {{#  if(d.STATUS_CODE == "D03"){ }}
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="over">确认收款</a>
+    {{#  } }}
+</script>
+<div class="box_t">
+    <div class="box-ttt"><span>办件查询</span></div>
+</div>
+    <div class="layui-form layui-form-pane searchDiv" >
+        <div class="layui-input-inline" style="width: 100px;">
+            <select id="item_type" >
+                <option value=""></option>
+                <option value="评审类">评审类</option>
+                <option value="合同类">合同类</option>
+                <option value="普惠类">普惠类</option>
+            </select>
+        </div>
+        <div class="layui-inline" style="width: 260px;">
+            <input class="layui-input" id="item_name" placeholder="项目名称" autocomplete="off">
+        </div>
+        <button class="layui-btn layui-btn-normal" data-type="reload">查询</button>
+    </div>
+<table class="layui-hide" id="bjcxlist" lay-filter="bjcxlist"></table>

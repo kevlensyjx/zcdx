@@ -1,0 +1,264 @@
+﻿@{
+    ViewBag.Title = "企业注册审批";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    function loadExt(viewModel, funcName) {
+        if (funcName == "afterLoad") {
+            loadGrid(viewModel.urls.list());
+            //$('#intelligence').combobox({
+            //    data: viewModel.extB(),
+            //    valueField: 'DIC_ID',
+            //    textField: 'DIC_NAME'
+            //});
+        }
+    }
+    function loadGrid(listurl) {
+        $('#data_grid').datagrid({
+            url: listurl,
+            pagination: true,
+            pageSize: 20,
+            pageList: [10, 20, 30, 40, 50],
+            fit: true,
+            fitColumns: true,
+            nowrap: false,
+            rownumbers: true,
+            singleSelect: true,
+            border: 0,
+            idField: 'SID',
+            sortName: 'APPLY_RESULT',
+            sortOrder: 'desc',
+            columns: [[
+                {
+                    title: '申请表',
+                    field: 'SID',
+                    width: 60,
+                    align: 'center',
+                    formatter: function (value, row) {
+                        if (row.APPLY_RESULT != null) {
+                            return '<a title="查看" style="text-decoration:underline;color:blue" href="#" onclick=\'showCompanyInfo("' + row.SID + '")\'><span>查看</span></a>';
+                        } else {
+                            return '<a title="审批" style="text-decoration:underline;color:blue" href="#" onclick=\'showCompanyInfo("' + row.SID + '")\'><span>查看</span></a>';
+                        }
+                    }
+                },
+                {
+                    title: '申请时间',
+                    field: 'CREATE_DT',
+                    width: 80,
+                    //sortable: true,
+                    align: 'center',
+                    formatter: function (value, row) {
+                        return value.substring(0, 10);
+                    }
+                },
+                 {
+                     title: '企业名称',
+                     field: 'CORP_NAME',
+                     width: 150,
+                     //sortable: true,
+                     align: 'center'
+                 },
+                  {
+                      title: '统一社会信用代码',
+                      field: 'SOCIAL_CREDIT_CODE',
+                      width: 100,
+                      //sortable: true,
+                      align: 'center'
+                  }, {
+                      title: '企业注册地址',
+                      field: 'REGISTERED_ADDRESS',
+                      width: 100,
+                      //sortable: true,
+                      align: 'center'
+                  }, {
+                      title: '法定代表人',
+                      field: 'LEGAL_PERSON',
+                     width: 100,
+                     //sortable: true,
+                     align: 'center'
+                 }
+            ]]
+        });
+
+    }
+
+    function handleApply(apply_result) {
+        $.ajax({
+            url: '/api/POLICY/POLICY_COMPANY_APPROVE/Apply/',
+            cache: false,
+            dataType: 'JSON',
+            type: 'post',
+            data: {"SID": $('#corp_sid').val(), "APPLY_RESULT": apply_result},
+            success: function (result) {
+                $.procAjaxMsg(result, function () {
+                    $('#data_grid').datagrid('reload');
+                    $('#apply_info').window('close');
+                    parent.frames["POLICY_APPROVE_DASHBOARD"].ShowInDesk();
+                    $.alertMsg(result.Msg, '操作提示', null);
+                }, function () {
+                    $.alertMsg(result.Msg, '操作提示', null);
+                });
+            }
+        });
+    }
+
+    function showCompanyInfo(sid) {
+        $.ajax({
+            url: '/api/POLICY/POLICY_COMPANY_APPROVE/GetCorpInfo/',
+            cache: false,
+            dataType: 'JSON',
+            type: 'post',
+            data: { "SID": sid },
+            success: function (result) {
+                $('#corp_sid').html('');
+                $('#corp_name_show').html('');
+                $('#social_c_code_show').html('');
+                $('#reg_address_show').html('');
+                $('#legal_p_show').html('');
+                $('#legal_p_phone_show').html('');
+                $('#operator_show').html('');
+                $('#operator_phone_show').html('');
+                $('#operator_id_no_show').html('');
+                $('#emial_show').html('');
+                $('#registered_capital_show').html('');
+                $('#yyzz').html('');
+                $('#zzjg').html('');
+                $.procAjaxMsg(result, function () {
+                    $('#apply_info').window('open');
+                    $('#corp_sid').val(result.Data.SID);
+                    $('#corp_name_show').html(result.Data.CORP_NAME);
+                    $('#social_c_code_show').html(result.Data.SOCIAL_CREDIT_CODE);
+                    $('#reg_address_show').html(result.Data.REGISTERED_ADDRESS);
+                    $('#legal_p_show').html(result.Data.LEGAL_PERSON);
+                    $('#legal_p_phone_show').html(result.Data.LEGAL_PERSON_PHONE);
+                    $('#operator_show').html(result.Data.OPERATOR);
+                    $('#operator_phone_show').html(result.Data.OPERATOR_PHONE);
+                    $('#operator_id_no_show').html(result.Data.OPERATOR_ID_NO);
+                    $('#emial_show').html(result.Data.EMIAL);
+                    $('#registered_capital_show').html(result.Data.REGISTERED_CAPITAL);
+                    if (result.Data.yyzz != null && result.Data.zzjg != null) {
+                        $('#file').show();
+                        $('#yyzz').html('<div class="image-row"><a id="ayyzz class="example-image-link" href="' + result.Data.yyzz + '" data-lightbox="example-1" ">营业执照</a></div>');
+                        $('#zzjg').html('<div class="image-row"><a id="azzjg class="example-image-link" href="' + result.Data.zzjg + '" data-lightbox="example-1" ">组织机构证</a></div>');
+                    }
+                    if (result.Data.APPLY_RESULT == "通过") {
+                        $('#groups').hide();
+                        $('#buttons').html("<span style='color:green;'>已通过</span>");
+                    } else if (result.Data.APPLY_RESULT == "驳回") {
+                        $('#groups').hide();
+                        $('#buttons').html("<span style='color:red;'>已驳回</span>");
+                    } else {
+                        $('#groups').show();
+                        $('#buttons').html("");
+                    }
+                }, function () {
+                    $.alertMsg(result.Msg, '操作提示', null);
+                });
+            }
+        });
+    }
+</script>
+
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'north',border:false" style="float: left; overflow: hidden; padding: 3px;">
+        <div id="z-toolbar" class="z-toolbar"></div>
+    </div>
+
+    <div data-options="region:'center',border:false" style="border-top: 1px solid #8db2e3">
+        <table id="data_grid"></table>
+    </div>
+</div>
+
+<div id="apply_info" class="easyui-window" data-options="modal:true,closed:true,minimizable:false,maximizable:false,collapsible:false,resizable:false,title:'注册信息'" style="width: 700px; height: 400px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <form id="DataForm" method="post">
+            <div data-options="region:'center',border:false" style="padding: 10px;">
+                <div style="width:100%;text-align:center;font-size:18px;">企业注册申请表</div>
+                <input type="hidden" id="corp_sid" />
+                <table class="nrgl_down_tab">
+                    <tr>
+                        <th style="width:100px;">企业名称</th>
+                        <td>
+                            <span id="corp_name_show"></span>
+                        </td>
+                        <th style="width:100px;">
+                            统一社会<br />信用代码
+                        </th>
+                        <td>
+                            <span id="social_c_code_show"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>企业注册地址</th>
+                        <td colspan="3">
+                            <span id="reg_address_show"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>法定代表人</th>
+                        <td>
+                            <span id="legal_p_show"></span>
+                        </td>
+                        <th>
+                            联系电话
+                        </th>
+                        <td>
+                            <span id="legal_p_phone_show"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>经办人</th>
+                        <td>
+                            <span id="operator_show"></span>
+                        </td>
+                        <th>
+                            联系电话
+                        </th>
+                        <td>
+                            <span id="operator_phone_show"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>经办人证件号码</th>
+                        <td>
+                            <span id="operator_id_no_show"></span>
+                        </td>
+                        <th>
+                            邮    箱
+                        </th>
+                        <td>
+                            <span id="emial_show"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>注册资本</th>
+                        <td colspan="3">
+                            <span id="registered_capital_show"></span>
+                        </td>
+                    </tr>
+                    
+                    <tr id="file" style="display:none">
+                        <td colspan="2">
+                            <span id="yyzz"></span>
+                        </td>
+                        <td colspan="2">
+                            <span id="zzjg"></span>
+                        </td>
+                    </tr>
+                </table>
+                <table class="nrgl_down_tab">
+                    <tr id="buttons" style="padding-left:270px; padding-top: 30px;">
+                        <div id="groups" style="display:none;padding-left:270px; padding-top: 30px;" >
+                            <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="handleApply('通过')">通过</a>
+                            <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="handleApply('驳回')">驳回</a>
+                        </div>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+

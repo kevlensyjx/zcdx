@@ -1,0 +1,264 @@
+﻿@{
+    ViewBag.Title = "项目管理项目公示";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+ 
+<script type="text/javascript">
+    function loadExt(viewModel, funcName) {
+        if (funcName == "afterLoad") {
+          
+            viewModel.extA(Project_Type_object);
+            viewModel.extB(Project_Cash_object);
+
+
+            viewModel.publicitySelectHandle = function () {
+                if (viewModel.Permission.a_selectdel) {
+                    var checkedItems = $('#data_grid')["datagrid"]('getChecked');
+                    var names = [];
+                    
+                    $.each(checkedItems, function (index, item) {
+                        //item.idField
+                        names.push(item["POLICY_SID"]);
+                    });
+                    var PKID = names.join(",");
+
+                    viewModel.isLogin(function () {
+                        if (PKID != "") {
+                            $.messager.confirm('请确认', '您确定要公示选中的行吗？', function (b) {
+                                if (b) {
+                                    $.ajax({
+                                        url: viewModel.urls.selectpolicity(),
+                                        data: { "": PKID },
+                                        cache: false,
+                                        type: 'post',
+                                        success: viewModel.selectpubSuccupfunc
+                                    }).fail(
+                                    function (xhr, textStatus, err) {
+                                        $.alertMsg('公示失败，原因如下: ' + xhr.responseJSON.ExceptionMessag, '操作提示', null);
+                                    });
+                                }
+                            });
+
+                        } else {
+                            $.alertMsg("请先选择要公示的行！", '操作提示', null);
+                        }
+
+                    });
+                } else {
+                    $.alertMsg(data.resx.deleteTitle, '操作提示', null);
+                }
+            }
+            viewModel.selectpubSuccupfunc = function succupCallback(result, textStatus) {
+                $.procAjaxMsg(result, function () {
+                    $('#data_grid')["datagrid"]('reload');
+                    $('#data_grid')["datagrid"]('unselectAll');
+                    $.alertMsg(result.Msg, '操作提示', null);
+                }, function () {
+                    $.alertMsg(result.Msg, '操作提示', null);
+                });
+            };
+
+            loadGrid(viewModel);
+        }
+    }
+
+    function loadGrid(viewModel) {
+        $('#data_grid').datagrid({
+            url: viewModel.urls.list(),
+            queryParams: { STATUS_CODE: viewModel.searchForm.STATUS_CODE() },
+            pagination: true,
+            pageSize: 20,
+            pageList: [10, 20, 30, 40, 50],
+            fit: true,
+            fitColumns: true,
+            nowrap: false,
+            rownumbers: true,
+            singleSelect: true,
+            selectOnCheck: false,
+            checkOnSelect: false,
+            border: 0,
+            idField: 'SID',
+            columns: [
+                [
+                    {
+                        title: '选择',
+                        field: 'ck',
+                        checkbox: true,
+                        width: 30,
+                        align: 'center'
+                    },
+                    { title: '当前状态', field: 'MAIN_INFO_STATUS_NAME', width: 100, align: 'center' },
+                     {
+                         title: '申请时间',
+                         field: 'CREATE_DT',
+                         width: 100,
+                         align: 'center',
+                         formatter: function (value, row) {
+                             if (row.TIME_LIMIT > 0)
+                                 return utils.ChangeDateByFormatStr(value, 'yyyy-MM-dd') + '(<span style = "color:red">时限' + row.TIME_LIMIT + '天)</span>';
+                             else
+                                 return utils.ChangeDateByFormatStr(value, 'yyyy-MM-dd');
+                         }
+                     },
+                    {
+                        title: '审批表',
+                        field: 'POLICY_SID',
+                        width: 60,
+                        align: 'center',
+                        formatter: function(value, row) {
+                            if (row.IS_HANDLE == "0")
+                                return '<a title="审批" style="text-decoration:underline;color:blue" href="#" onclick=\'handleApply("' + value + '","' + row.SID + '")\'><span>审批</span></a>';
+                            else
+                                return '<a title="审批" style="text-decoration:underline;color:blue" href="#" onclick=\'handleApply("' + value + '","' + row.SID + '")\'><span>查看</span></a>';
+                        }
+                    },
+                    {
+                        title: '申请表', field: 'APPLY_NUMBER', width: 100, align: 'center', formatter: function (value, row) {
+                            return '<a title="查看申请信息" style="text-decoration:underline;color:blue" href="#" onclick=\'showCompanyInfo("' + value + '","' + row.POLICY_SID + '")\'><span>' + value + '</span></a>';
+                        }
+                    },
+                    { title: '项目类别', field: 'APPLY_ITEM_TYPE', width: 100, align: 'center' },
+                    { title: '项目', field: 'APPLY_ITEM_NAME', width: 100, align: 'center' },
+                    { title: '企业名称', field: 'CORP_NAME', width: 100, align: 'center' },
+                    //{ title: '申请资金', field: 'APPLY_MONEY_WORDS', width: 100, align: 'center' }
+                ]
+            ]
+        });
+
+    }
+
+    function handleApply(corpsid, sid) {
+        $("#company_info").window('open');
+        //获取当前用户状态
+        $.ajax({
+            url: '/POLICY/POLICY_MAIN_INFO_APPROVE/Apply/' + corpsid,
+            cache: false,
+            dataType: 'JSON',
+            success: function(result) {
+                if (result != undefined) {
+                    $("#corp_name").html(result.CORP_NAME);
+                    $("#apply_item_type").html(result.APPLY_ITEM_TYPE);
+                    $("#apply_number").html(result.APPLY_NUMBER);
+                    $("#apply_item_info").html(result.APPLY_ITEM_NAME);
+                    $("#handle_content_1").html(result.HANDLE_CONTENT_1);
+                    $("#status_code_temp").val(result.MAIN_INFO_STATUS_CODE);
+                    $("#handle_content_2").html(result.HANDLE_CONTENT_2);
+                    if (result.IS_SHOW_3 == "1") {
+                        $("#tr_bmhs").show();
+                        $("#handle_content_3").html(result.HANDLE_CONTENT_3);
+                    }
+                    else
+                        $("#tr_bmhs").hide();
+                    if (result.IS_SHOW_4 == "1")
+                    {
+                        $("#tr_xmpj").show();
+                        $("#handle_content_4").html(result.HANDLE_CONTENT_4);
+                    }
+                    else
+                        $("#tr_xmpj").hide();
+
+                    $("#handle_content_5").html(result.HANDLE_CONTENT_5);
+                    $("#handle_content_6").html(result.HANDLE_CONTENT_6);
+                    $("#handle_content_7").html(result.HANDLE_CONTENT_7);
+                }
+            }
+        });
+        $("#sid_temp").val(sid);
+    }
+    function showCompanyInfo(a_number, p_sid) {
+        $("#apply_info").window('open');
+
+        $("#corp_name_show").html("");
+        $("#apply_number_show").html("");
+        $("#apply_item_type_show").html("");
+        $("#social_c_code_show").html("");
+        $("#reg_address_show").html("");
+        $("#legal_p_show").html("");
+        $("#legal_p_phone_show").html("");
+        $("#operator_show").html("");
+        $("#operator_phone_show").html("");
+        $("#operator_id_no_show").html("");
+        $("#emial_show").html("");
+        $("#registered_capital_show").html("");
+        $("#apply_item_info_show").html("");
+        $("#apply_m_w_show").html("");
+        $("#apply_m_n_show").html("");
+        $("#file_info_show").html("");
+        //获取当前用户状态
+        $.ajax({
+            url: '/POLICY/POLICY_MAIN_INFO_APPROVE/ApplyCorpInfo/' + p_sid,
+            cache: false,
+            dataType: 'JSON',
+            success: function (result) {
+                if (result.Statu == "1") {
+                    $("#corp_name_show").html(result.Data.CORP_NAME);
+                    $("#apply_number_show").html(result.Data.APPLY_NUMBER);
+                    $("#apply_item_type_show").html(result.Data.APPLY_ITEM_TYPE);
+
+                    $("#social_c_code_show").html(result.Data.SOCIAL_CREDIT_CODE);
+                    $("#reg_address_show").html(result.Data.REGISTERED_ADDRESS);
+                    $("#legal_p_show").html(result.Data.LEGAL_PERSON);
+                    $("#legal_p_phone_show").html(result.Data.LEGAL_PERSON_PHONE);
+                    $("#operator_show").html(result.Data.OPERATOR);
+                    $("#operator_phone_show").html(result.Data.OPERATOR_PHONE);
+                    $("#operator_id_no_show").html(result.Data.OPERATOR_ID_NO);
+                    $("#emial_show").html(result.Data.EMIAL);
+                    $("#registered_capital_show").html(result.Data.REGISTERED_CAPITAL);
+                    $("#apply_item_info_show").html(result.Data.APPLY_ITEM_NAME);
+                    $("#apply_m_w_show").html(result.Data.APPLY_MONEY_WORDS);
+                    $("#apply_m_n_show").html(result.Data.APPLY_MONEY_NUMBER);
+                    if (result.Data.fileList.length > 0) {
+                        var fileListInfo = "";
+                        fileListInfo += '<table style ="width:100%;border-collapse:collapse;" border="0" cellpadding="0" cellspacing="0">';
+                        fileListInfo += '<tr><th style="border:0;width:180px;border-right: 1px solid #8DB2E3;">材料名称</th><th style="border:0;width:160px;border-right: 1px solid #8DB2E3;">证书编码</th><th style="border:0;">查看</th></tr>';
+                        for (var i = 0; i < result.Data.fileList.length; i++) {
+                            fileListInfo += '<tr><td style="border:0;border-right:1px solid #8DB2E3;border-top: 1px solid #8DB2E3;">' + result.Data.fileList[i].DOCUMENT_NAME +
+                                '</td><td style="border:0;border-right: 1px solid #8DB2E3;border-top: 1px solid #8DB2E3;">' + result.Data.fileList[i].PATENT_NUMBER +
+                                '</td><td style="border:0;border-top: 1px solid #8DB2E3;text-align:center"><div class="image-row"><a id="a' + result.Data.fileList[i].SID + '" class="example-image-link" href="' + result.Data.fileList[i].FILE_PATH + '" data-lightbox="example-1" data-title="<a class=\'right\' href=\'/POLICY/POLICY_MAIN_INFO_APPROVE/DownLoadImage?id=' + result.Data.fileList[i].SID + '\'><img src=\'/Content/images/save.png\' title=\'保存原图到本地\'/></a>">预览</a></div></td></tr>';
+                        }
+                        fileListInfo += '</table>';
+                        $("#file_info_show").html(fileListInfo);
+                    }
+                    if (result.Data.APPLY_ITEM_TYPE == "评审类") {
+                        $("#tr_psl").show();
+                        $("#tr_htl").hide();
+                        $("#tr_phl").hide();
+                    }
+                    else if (result.Data.APPLY_ITEM_TYPE == "合同类") {
+                        $("#tr_htl").show();
+                        $("#tr_psl").hide();
+                        $("#tr_phl").hide();
+                    }
+                    else if (result.Data.APPLY_ITEM_TYPE == "普惠类") {
+                        $("#tr_phl").show();
+                        $("#tr_htl").hide();
+                        $("#tr_psl").hide();
+                    }
+                }
+            }
+        });
+
+    }
+</script>
+
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'north',border:false" style="float: left; overflow: hidden; padding: 3px;">
+        <table class="z-selectbar">
+            <tr>
+                <td>
+                    &nbsp;合同类型&nbsp;<input style="width: 100px" data-bind="comboboxSource: extA, comboboxValue: searchForm.ITEM_TYPE" data-options="editable: false, valueField: 'id', textField: 'text'" />
+                    <span id="s-toolbar"></span>
+                </td>
+            </tr>
+        </table>
+        <div id="my-toolbar" class="z-toolbar">
+            <span id="z-toolbar"></span>
+            <a id="a_selectdel" data-options="disabled:true" href="javascript:void(0);" plain="true" class="easyui-linkbutton" icon="icon-control_play_blue" title="开始公示" data-bind="click: $root.publicitySelectHandle">开始公示</a>
+        </div>
+    </div>
+
+    <div data-options="region:'center',border:false" style="border-top: 1px solid #8db2e3">
+        <table id="data_grid"></table>
+    </div>
+</div>
+ 

@@ -1,0 +1,19 @@
+﻿<configuration>
+  <configSections>
+    <section name="unity" type="Microsoft.Practices.Unity.Configuration.UnityConfigurationSection, Microsoft.Practices.Unity.Configuration"/>
+  </configSections>
+  <unity>
+    <sectionExtension type="Microsoft.Practices.Unity.InterceptionExtension.Configuration.InterceptionConfigurationExtension, Microsoft.Practices.Unity.Interception.Configuration"/>
+    <containers>
+
+      <container name="SolutionContainer">
+        <register type="System.Data.Entity.DbContext, EntityFramework" mapTo="SolutionWeb.Model.POLICY.SolutionEntities, SolutionWeb.Model.POLICY" name="SolutionWeb.Model.POLICY.SolutionEntities"/>
+        <register type="System.Data.Entity.DbContext, EntityFramework" mapTo="SolutionWeb.Model.SYS.SolutionEntities, SolutionWeb.Model.SYS" name="SolutionWeb.Model.SYS.SolutionEntities"/>
+        <register type="SolutionWeb.Interface.IBaseService,SolutionWeb.Interface" mapTo="SolutionWeb.Service.BaseService, SolutionWeb.Service"/>
+        <register type="SolutionWeb.Interface.IUserLogin,SolutionWeb.Interface" mapTo="SolutionWeb.Areas.SYS.Service.UserLogin, SolutionWeb.Areas.SYS"/>
+        <register type="SolutionWeb.Interface.ICompanyLogin,SolutionWeb.Interface" mapTo="SolutionWeb.Areas.COMPANY.Service.CompanyLogin, SolutionWeb.Areas.COMPANY"/>
+      </container>
+
+    </containers>
+  </unity>
+</configuration>

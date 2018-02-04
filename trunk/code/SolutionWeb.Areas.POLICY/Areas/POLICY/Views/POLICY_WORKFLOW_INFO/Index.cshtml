@@ -1,0 +1,345 @@
+﻿@{
+    ViewBag.Title = "流程设置";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    $(function() {
+        
+        //$('#input_current_step').combobox({
+        //    onSelect: function (item) {
+        //        var item_type = $("#input_item_type").combobox("getValue");
+        //        if (item_type != "") {
+        //            $.ajax({
+        //                url: '/POLICY/POLICY_WORKFLOW_INFO/GetFlowStepInfo/',
+        //                data: { "ITEM_TYPE": item_type, "STATUS_CODE": item.id, "BEFORE_FLAG": "1" },
+        //                cache: false,
+        //                dataType: 'JSON',
+        //                type: 'post',
+        //                async: false,
+        //                success: function(dicdata) {
+        //                    //$("#input_back_step").combobox('loadData', dicdata);
+        //                    //$("#input_previous_step").combobox('loadData', dicdata);
+        //                }
+        //            });
+        //        } else {
+                    
+        //            $.alertMsg('请先选择类型', '操作提示', null);
+        //        }
+        //    }
+        //});
+    });
+    function getStepInfo(id) {
+         
+        var item_type = $("#input_item_type").combobox("getValue");
+        if (item_type != "") {
+            $.ajax({
+                url: '/POLICY/POLICY_WORKFLOW_INFO/GetFlowStepInfo/',
+                data: { "ITEM_TYPE": item_type, "STATUS_CODE": id, "BEFORE_FLAG": "1" },
+                cache: false,
+                dataType: 'JSON',
+                type: 'post',
+                async: false,
+                success: function (dicdata) {
+                    $("#input_back_step").combobox('loadData', dicdata);
+                    $("#input_previous_step").combobox('loadData', dicdata);
+                }
+            });
+            $.ajax({
+                url: '/POLICY/POLICY_WORKFLOW_INFO/GetFlowStepInfo/',
+                data: { "ITEM_TYPE": item_type, "STATUS_CODE": id, "BEFORE_FLAG": "0" },
+                cache: false,
+                dataType: 'JSON',
+                type: 'post',
+                async: false,
+                success: function (dicdata) {
+                    $("#input_next_step").combobox('loadData', dicdata);
+                }
+            });
+        } else {
+
+            $.alertMsg('请先选择类型', '操作提示', null);
+        }
+    }
+    function loadExt(viewModel, funcName) {
+        if (funcName == "afterLoad") {
+            
+            viewModel.extA(Project_Type_object);
+            viewModel.extB(Project_Seal_object);
+            
+            viewModel.extE(Project_Countersign_object);
+            viewModel.extF(Project_BackType_object);
+
+
+            $('#input_handler').combotree('clear');
+
+            $('#input_handler').combotree('loadData', viewModel.extD());
+
+            loadGrid(viewModel.urls.list());
+            
+            //$("input[name='checktype2']:checked").val()
+        }
+        if (funcName == "beforeAdd") {
+            
+            $('#input_handler').combotree('clearChecked');
+
+        }
+        if (funcName == "afterEdit") {
+           
+            var deptList = viewModel.addForm.DEFAULT_HANDLER() == null ? "" : viewModel.addForm.DEFAULT_HANDLER();
+            if (deptList != "") {
+                $('#input_handler').combotree('clearChecked');
+                $('#input_handler').combotree('tree').tree('collapseAll');
+
+                for (var i = 0; i < deptList.split(',').length; i++) {
+                    $('#input_handler').combotree('expandParentNode', deptList.split(',')[i]);
+                }
+            } else {
+                $('#input_handler').combotree('clearChecked');
+                // $('#gateno').combotree('loadData', viewModel.extD());
+            }
+        }
+        if (funcName == "beforeSubmit")
+        {
+            var bt_1 = $("input[name='button_pass']:checked").val();
+            var bt_2 = $("input[name='button_reject']:checked").val();
+            var bt_value = "";
+            if (bt_1 != "undefined")
+            {
+                bt_value = bt_1 + ',';
+            }
+            if (bt_2 != "undefined") {
+                bt_value = bt_value + bt_2;
+            }
+            viewModel.addForm.BUTTONS_VALUE(bt_value);
+        }
+    }
+    function loadGrid(listurl) {
+        $('#data_grid').datagrid({
+            url: listurl,
+            pagination: true,
+            pageSize: 20,
+            pageList: [10, 20, 30, 40, 50],
+            fit: true,
+            fitColumns: false,
+            nowrap: false,
+            rownumbers: true,
+            singleSelect: true,
+            border: 0,
+            idField: 'SID',
+            columns: [[
+                { title: '类别', field: 'ITEM_TYPE', width: 100, align: 'center' },
+                { title: '节点名称', field: 'STATUS_NAME', width: 380, halign: 'center', align: 'left' },
+                {
+                    title: '处理结果', field: 'HANDLE_RESULT', width: 100, align: 'center', formatter: function (value) {
+                        if (value == "1")
+                            return "通过";
+                        else
+                            return "驳回";
+                    }
+                },
+                { title: '下一节点', field: 'NEXT_STATUS_NAME', width: 100, align: 'center' },
+                { title: '节点时效(天)', field: 'TIME_LIMIT', width: 100, align: 'center' } 
+            ]],
+            onLoadSuccess: function (rowData) {
+                if (rowData.rows.length > 0) {
+                    //调用mergeCellsByField()合并单元格
+                    mergeCellsByField_Special("data_grid", "ITEM_TYPE", 1);
+                }
+            }
+        });
+
+    }
+    /**
+  * EasyUI DataGrid根据字段动态合并单元格
+  * 参数 tableID 要合并table的id
+  * 参数 colList 要合并的列,用逗号分隔(例如："name,department,office");
+  */
+    function mergeCellsByField_Special(tableID, colList, mainColIndex) {
+        var ColArray = colList.split(",");
+        var tTable = $("#" + tableID);
+        var TableRowCnts = tTable.datagrid("getRows").length;
+        var tmpA;
+        var tmpB;
+        var PerTxt = "";
+        var CurTxt = "";
+        var alertStr = "";
+
+        for (j = ColArray.length - 1; j >= 0; j--) {
+            PerTxt = "";
+            tmpA = 1;
+            tmpB = 0;
+
+            for (i = 0; i <= TableRowCnts; i++) {
+                if (i == TableRowCnts) {
+                    CurTxt = "";
+                }
+                else {
+                    CurTxt = tTable.datagrid("getRows")[i][ColArray[j]];
+                }
+                if (PerTxt == CurTxt) {
+                    tmpA += 1;
+                }
+                else {
+                    tmpB += tmpA;
+
+                    tTable.datagrid("mergeCells", {
+                        index: i - tmpA,
+                        field: ColArray[j],　　//合并字段
+                        rowspan: tmpA,
+                        colspan: null
+                    });
+
+
+                    tmpA = 1;
+                }
+                PerTxt = CurTxt;
+            }
+        }
+        tmpA = 0;
+        PerTxt = "";
+        CurTxt = "";
+        for (var i = 0; i <= TableRowCnts ; i++) {
+
+            if (i == TableRowCnts) {
+                CurTxt = "";
+            }
+            else {
+                CurTxt = tTable.datagrid("getRows")[i][ColArray[mainColIndex]];
+            }
+            if (PerTxt == CurTxt) {
+                tmpA += 1;
+            }
+            else {
+                if (tmpA != 0) {
+                    if (tTable.datagrid("getRows")[i - tmpA][ColArray[0]] == tTable.datagrid("getRows")[i - tmpA][ColArray[1]]) {
+                        tTable.datagrid('mergeCells', {
+                            index: i - tmpA,
+                            field: ColArray[0],
+                            rowspan: tmpA,
+                            colspan: 2
+                        });
+                    }
+                }
+                tmpA = 1;
+            }
+
+            PerTxt = CurTxt;
+        }
+
+    }
+
+    $.extend($.fn.combotree.methods, {
+        expandParentNode: function (jq, childnode) {
+            var Node = jq.combotree('tree').tree('find', childnode);
+            jq.combotree('tree').tree('check', Node.target);
+            var ParNode = jq.combotree('tree').tree('getParent', Node.target);
+            if (ParNode != null) {
+                jq.combotree('tree').tree('expand', ParNode.target);
+                var ParParNode = jq.combotree('tree').tree('getParent', ParNode.target);
+                if (ParParNode != null) {
+                    jq.combotree('tree').tree('expand', ParParNode.target);
+                    var ParParParNode = jq.combotree('tree').tree('getParent', ParParNode.target);
+                    if (ParParParNode != null) {
+                        jq.combotree('tree').tree('expand', ParParParNode.target);
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'north',border:false" style="float: left; overflow: hidden; padding: 3px;">
+        <table class="z-selectbar">
+            <tr>
+                <td>
+                    &nbsp;合同类型&nbsp;<input style="width: 100px" data-bind="comboboxSource: extA, comboboxValue: searchForm.ITEM_TYPE" data-options="editable: false, valueField: 'id', textField: 'text'" />
+
+                    <span id="s-toolbar"></span>
+                </td>
+            </tr>
+        </table>
+        <div id="z-toolbar" class="z-toolbar"></div>
+    </div>
+
+    <div data-options="region:'center',border:false" style="border-top: 1px solid #8db2e3">
+        <table id="data_grid"></table>
+    </div>
+</div>
+
+<div id="data_add" class="easyui-window" data-options="modal:true,closed:true,minimizable:false,maximizable:false,collapsible:false,resizable:false,title:'节点配置'" style="width: 600px; height: 500px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <form id="DataForm" method="post">
+            <div data-options="region:'center',border:false" style="padding: 10px;">
+                <table class="nrgl_down_tab">
+                    <tr>
+                        <th style="width: 80px">类别</th>
+                        <td>
+                            <input id="input_item_type" name="input_item_type" style="width: 145px" data-bind="comboboxSource: extA, comboboxValue: addForm.ITEM_TYPE,easyuiOptions:{editable: false, valueField: 'id', textField: 'text', required:true}" />
+                        </td>
+                        <th>节点名称</th>
+                        <td>
+                            <input id="input_current_step" name="input_current_step" style="width: 145px;" data-bind="comboboxSource: extC, comboboxValue: addForm.STATUS_NAME,easyuiOptions:{editable: false, valueField: 'id', textField: 'text', required:true,onChange:function (newValue, oldValue){getStepInfo(newValue);}}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="width: 80px">处理按钮</th>
+                        <td>
+                            <input id="button_pass" name="button_pass" type="checkbox" value="1" /> 通过 <input id="button_reject" name="button_reject" type="checkbox" value="2" /> 退回
+                        </td>
+                        <th style="width: 80px">审签类型</th>
+                        <td>
+                            <input style="width: 145px" data-bind="comboboxSource: extB, comboboxValue: addForm.IS_SEAL,easyuiOptions:{editable: false, valueField: 'id', textField: 'text'}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>是否有附件</th>
+                        <td>
+                            <input type="checkbox" data-bind="checked: addForm.IS_HAS_FILE" /> 有附件
+                        </td>
+
+                        <th>会签策略</th>
+                        <td>
+                            <input style="width: 145px;" data-bind="comboboxSource:extE,comboboxValue:addForm.COUNTERSIGN,easyuiOptions:{editable: false, valueField: 'id', textField: 'text'}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>默认处理者</th>
+                        <td colspan="3">
+                            <input  name="input_handler" id="input_handler" style="width:250px" class="easyui-combotree" data-options="onlyLeafCheck:true,multiple: true,editable: false,cascadeCheck: false"  /> &nbsp;&nbsp;时效(天)<input style="width: 50px;" data-bind="textboxValue:addForm.TIME_LIMIT " data-options="validType: ['numberCheckSub'] " />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="4"></td>
+                    </tr>
+                     
+                    <tr>
+                        <th>上一步骤</th>
+                        <td>
+                            <input id="input_previous_step" style="width:145px" data-bind="comboboxValue:addForm.PREVIOUS_STEP,easyuiOptions:{editable: false, valueField: 'id', textField: 'text'}" />
+                        </td>
+                        <th>下一步骤 </th>
+                        <td><input id="input_next_step" style="width:145px" data-bind="comboboxValue:addForm.NEXT_STEP,easyuiOptions:{editable: false, valueField: 'id', textField: 'text'}" /></td>
+                    </tr>
+                    <tr>
+                        <th>退回步骤</th>
+                        <td>
+                            <input id="input_back_step" style="width:145px" data-bind="comboboxValue:addForm.BACK_STEP,easyuiOptions:{editable: false, valueField: 'id', textField: 'text'}" />
+                        </td>
+                        <th>退回类型</th>
+                        <td>
+                            <input style="width:145px" data-bind="comboboxSource:extF,comboboxValue:addForm.BACK_CLASS,easyuiOptions:{editable: false, valueField: 'id', textField: 'text'}" />
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+            <div id="v-toolbar" data-options="region:'south',border:false" style="text-align: right; height: 35px; padding: 4px; padding-right: 10px; border-top: 1px solid #ccc;">
+            </div>
+        </form>
+    </div>
+</div>
+
+
+

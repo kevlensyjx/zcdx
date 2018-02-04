@@ -1,0 +1,5 @@
+﻿ <#@include file="$(SolutionDir)\SxshWeb.Common\CodeTemplates\ProxyModel.ttinclude"#>  
+<#
+	   string[] dllurls={"SxshWeb.Model.TEST/bin/Debug/SxshWeb.Model.TEST.dll"};
+       Create(dllurls);
+#>

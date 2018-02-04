@@ -1,0 +1,102 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+        @Scripts.Render("~/jquery-easyui/js")
+        @Styles.Render("~/jquery-easyui/css")
+
+        @Scripts.Render("~/Content/js")
+        @Styles.Render("~/Content/css")
+
+    <script src="/Content/JS/index.js"></script>
+    <title>山西转型综合改革示范区数字化档案管理系统</title>
+</head>
+<body class="easyui-layout" id="my_body">
+    <div region="north" class="head-north" split="false" border="false">
+        <span class="head-left"></span>
+        <span class="list-right"></span>
+        <span class="list-center">
+            <span id="MenuOne" style="float: left;"></span>
+            <span style="float: right;">
+                <a href="javascript:void(0)" class="easyui-menubutton" id="homepage" plain="true" title="业务模块" data-options="iconCls:'icon-homepage',menu:'#NavSystem'">业务模块</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" id="changePass" plain="true" title="修改密码" data-options="iconCls:'icon-key'">修改密码</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" id="loginOut" plain="true" title="安全退出" data-options="iconCls:'icon-user_go'">安全退出</a>
+
+            </span>
+        </span>
+        <span class="list-left"></span>
+    </div>
+    <div id="west" data-options="region:'west',split:true,title:'导航',collapsed:true" style="width: 160px; padding: 0px;" border="true">
+        <div id="MenuTree"></div>
+    </div>
+    <div id="mainPanle" region="center" border="true" border="false" style="background: #eee; overflow-y: hidden">
+        <div id="tabs" class="easyui-tabs" fit="true" border="false" style="overflow-y: hidden">
+        </div>
+    </div>
+    <div region="south" class="head-south">
+        <div style="color: #15428B; margin: 0px; padding: 0px; line-height: 23px; font-weight: bold;">
+            <span style="margin-left: 5px;">当前用户名:@ViewBag.CurrentUser</span>
+            <span style="margin-left: 400px">
+                Copyright &copy; 山西转型综合改革示范区管理委员会 © 版权所有　电话：0351-7199976 晋ICP备17009227号
+            </span>
+        </div>
+    </div>
+    <!--修改密码窗口-->
+    <div id="editpass" class="easyui-window" title="修改密码" data-options="modal:true,closed:true,iconCls:'icon-save',minimizable:false,maximizable:false,collapsible:false" style="width: 500px; height: 300px; padding: 10px;display:none;">
+        <div class="easyui-layout" fit="true">
+            <form id="form-pass" method="post">
+                <div region="center" border="false" style="padding: 10px; background: #fff; border: 1px solid #ccc;">
+                    <table cellpadding="3" style="width: 100%">
+                        <tr>
+                            <td style="width: 30%">原始密码：</td>
+                            <td style="width: 70%">
+                                <input id="txtoldpass" name="txtoldpass" type="password" class="easyui-textbox" maxlength="25" data-options="required:true,validType:['length[3,25]']" style="width: 50%" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>新 密 &nbsp;码：</td>
+                            <td>
+                                <input id="txtnewpass" name="txtnewpass" type="password" class="easyui-textbox" maxlength="25" data-options="required:true,validType:['length[8,25]','isRegisterPassWord']" style="width: 50%" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                密码强度:
+                            </td>
+                            <td>
+                                <table style="width: 50%">
+                                    <tr>
+                                        <td id="weak" style="width: 30%"></td>
+                                        <td id="middle" style="width: 30%"></td>
+                                        <td id="strength" style="width: 30%"></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>确认密码：</td>
+                            <td>
+                                <input id="txtrepass" name="txtrepass" type="password" class="easyui-textbox" maxlength="25" validtype="equalTo['#txtnewpass']" data-options="required:true,validType:['length[8,25]'],invalidMessage:'两次输入密码不匹配'" style="width: 50%" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div region="south" border="false" style="text-align: right; height: 30px; padding-top: 4px;">
+                    <a id="btnEp" class="easyui-linkbutton" icon="icon-ok" href="javascript:void(0)">修改</a>
+                    <a id="btnCancel" class="easyui-linkbutton" icon="icon-cancel" href="javascript:void(0)">取消</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="NavSystem"></div>
+</body>
+</html>

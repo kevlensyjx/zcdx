@@ -1,0 +1,212 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    .screen ul li {
+        width: 110px;
+    }
+
+    .block {
+        display: block;
+        float: left;
+        height: 115px;
+        overflow: hidden;
+        padding: 15px 10px 0 0;
+        text-align: center;
+    }
+
+        .block .count {
+            background-image: url("../../content/images/count_bg.png");
+            background-repeat: no-repeat;
+            height: 40px;
+            position: absolute;
+            right: -20px;
+            top: -8px;
+            width: 44px;
+        }
+
+    li.block .img {
+        cursor: pointer;
+        height: 86px;
+        line-height: 86px;
+        margin: 0 auto;
+        position: relative;
+        text-align: center;
+        width: 86px;
+    }
+
+        li.block .img p {
+            position: static;
+            top: 50%;
+        }
+
+            li.block .img p img {
+                height: 65px;
+                left: 50%;
+                margin-left: -32px;
+                margin-top: -32px;
+                max-height: 86px;
+                max-width: 86px;
+                position: absolute;
+                top: 50%;
+                vertical-align: middle;
+                width: 65px;
+            }
+
+            li.block .img p::after {
+                content: ".";
+                font-size: 1px;
+                visibility: hidden;
+            }
+
+    .block .count1 {
+        background-position: -16px -41px;
+    }
+
+    .block .count2 {
+        background-position: -16px -84px;
+    }
+
+    .block .count3 {
+        background-position: -16px -126px;
+    }
+
+    .block .count4 {
+        background-position: -16px -168px;
+    }
+
+    .block .count5 {
+        background-position: -16px -210px;
+    }
+
+    .block .count6 {
+        background-position: -16px -252px;
+    }
+
+    .block .count7 {
+        background-position: -16px -294px;
+    }
+
+    .block .count8 {
+        background-position: -16px -336px;
+    }
+
+    .block .count9 {
+        background-position: -16px -378px;
+    }
+
+    .block .count10 {
+        background-position: -16px -420px;
+    }
+
+    .screen ul {
+        box-sizing: border-box;
+        height: 100%;
+        padding: 10px 70px 0;
+    }
+
+    ul, ol {
+        list-style: outside none none;
+    }
+</style>
+<script src="~/Content/JS/unapprove.js"></script>
+<script>
+     $(document).ready(function () {
+         unapproveManager.Start();
+         //$.ajax({
+         //    url: '/POLICY/POLICY_APPROVE_DASHBOARD/GetPolicyStatisticsInfo',
+         //    cache: false,
+         //    dataType: 'JSON',
+         //    type: 'post',
+         //    success: function (result) {
+         //        //静态图表 开始
+               
+         //        $("#containerYS").html("");
+
+         //        if (result.statusstatisticsList != null) {
+               
+         //            var wait_handle = "";
+         //            for (var i = 0; i < result.statusstatisticsList.length; i++) {
+         //                wait_handle += ' <li class="block" index="5" style="margin-left: 7px; margin-right: 7px;">' +
+         //                                   ' <div class="img">'+
+         //                                   '       <p><a class="icon-text" href="#" onclick="view(\'' + result.statusstatisticsList[i].STATUS_NAME + '\',\'' + result.statusstatisticsList[i].STATUS_URL + '\')"><img src="../..//content/images/sp_' + result.statusstatisticsList[i].STATUS_CODE + '.png"></a></p>' +
+         //                                   '       <div  class="count count' + result.statusstatisticsList[i].ACCEPT_COUNT + '"></div>' +
+         //                                   ' </div>'+
+         //                                   '   <a class="icon-text" href="#" onclick="view(\'' + result.statusstatisticsList[i].STATUS_NAME + '\',\'' + result.statusstatisticsList[i].STATUS_URL + '\')"><span>' + result.statusstatisticsList[i].STATUS_NAME + '</span></a>' +
+         //                               '</li>';
+         //                //wait_handle += result.statusstatisticsList[i].STATUS_NAME +
+         //                //    ':&nbsp;<a  herf="#" onclick="view(\'' + result.statusstatisticsList[i].STATUS_NAME + '\',\'' + result.statusstatisticsList[i].STATUS_URL + '\')"><span style="color:red;">' + result.statusstatisticsList[i].ACCEPT_COUNT + '</span></a>&nbsp;件;&nbsp;';
+         //            }
+         //            $("#containercase_desc").html(wait_handle);
+         //        }
+         //        else {
+         //            $("#containercase_desc").html("");
+         //        }
+         //        //静态图表 结束
+         //    }
+         //});
+         
+     });
+
+     function view(plantype, planno) {
+         parent.addTabInIndex(plantype, planno, "icon icon-table");
+       
+     }
+     function ShowInDesk() {
+         unapproveManager.getdefectCond();
+     }
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+
+
+    <div data-options="region:'center',border:false" style="float: left; overflow: hidden; padding: 3px;">
+        <div style="padding: 3px;border:1px solid #8DB2E3;height:310px; ">
+            <div  class="screen" style="height: 300px; width: 90%; float: left; margin-left: 30px;">
+                <ul id="containercase_desc" class="ui-sortable">
+                   
+                </ul>
+            </div>
+        </div>
+        <div style="padding: 3px;border:1px solid #8DB2E3;height:150px;margin-top:5px; ">
+            <div class="screen" style="height: 150px; width: 90%; float: left; margin-left: 30px;">
+                <ul class="ui-sortable" style="padding-top:0px;">
+                    <li class="block" index="5" style="margin-left: 7px; margin-right: 7px;padding-top:0px;">
+                    <div class="img">
+                        <p>
+                            <a class="icon-text" href="#" onclick="view('服务事项', '/POLICY/POLICY_PROJECT_CONFIG/myIndex')"><img src="~/content/images/企业确认.png"></a>
+                        </p>
+                    </div>
+                        <a class="icon-text" href="#" onclick="view('服务事项', '/POLICY/POLICY_PROJECT_CONFIG/myIndex')">
+                            <span>服务事项</span>
+                        </a>
+                </li>
+                <li class="block" index="5" style="margin-left: 7px; margin-right: 7px;padding-top:0px;">
+                    <div class="img">
+                        <p>
+                            <a class="icon-text" href="~/Users/ht" target="_blank"> <img src="~/content/images/企业申请.png"></a>
+                        </p>
+                      
+                    </div>
+                    <a class="icon-text" href="~/Users/ht" target="_blank">
+                        <span>流程查看</span>
+                    </a>
+                </li>
+                <li class="block" index="5" style="margin-left: 7px; margin-right: 7px;padding-top:0px;">
+                    <div class="img">
+                        <p>
+                            <a class="icon-text" href="~/Users/Sqzn" target="_blank"><img src="~/content/images/企业请拨.png"></a>
+                        </p>
+                    </div>
+                    <a class="icon-text" href="~/Users/Sqzn" target="_blank">
+                        <span>事项查看</span>
+                    </a>
+                </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+

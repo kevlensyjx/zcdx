@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewBag.Title = "政策兑现";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+<script type="text/javascript">
+    function loadInit() {
+        getGs();
+        //getGg();
+};
+
+
+function getGs() {
+    $.ajax({
+        url: '/api/Users/XxgsIndex',
+        type: "POST",
+        dataType: "JSON",
+        success: function succCallback(result, textStatus) {//回调成功,
+                $(result.rows).each(
+                function (index) {
+                    var type = result.rows[index].APPLY_ITEM_TYPE;
+                    var name = result.rows[index].APPLY_ITEM_NAME;
+                    var corp = result.rows[index].CORP_NAME;
+                    var sid = result.rows[index].SID;
+                    var gsrq = result.rows[index].POLICITY_BEGIN_DT.split('T')[0] + "至" + result.rows[index].POLICITY_END_DT.split('T')[0];
+                    var li = '<li onclick="xxgsxx(\'' + type + '\',\'' + name + '\',\'' + sid + '\')"><a href="#">' + corp + type + name + '审批通过<span>'+gsrq+'</span></a></li>';
+                    $("#gsli").append(li);
+
+                });
+
+                $("#scrollDiv").Scroll({ line: 1, speed: 500, timer: 3000 });
+        }
+    });
+}
+function xxgsxx(type, name, sid) {
+
+    layer.open({
+        type: 2,
+        title: type + "-" + name,
+        shadeClose: true,
+        shade: 0.5,
+        maxmin: true, //开启最大化最小化按钮
+        area: ['890px', '550px'],
+        content: "/Users/Xxgsxx/" + sid
+    });
+}
+//function getGg() {
+//    $.ajax({
+//        url: '/api/Users/TzggIndex',
+//        type: "POST",
+//        dataType: "JSON",
+//        success: function succCallback(result, textStatus) {//回调成功,
+//                $(result.rows).each(
+//                function (index) {
+//                    var title = result.rows[index].NOTICE_TITLE;
+//                    var sid = result.rows[index].SID;
+//                    var li = '<li onclick="tzggxx(\'' + title + '\',\'' + sid + '\')"><a href="javascript:(0)">' + title + '</a></li>';
+//                    $("#ggli").append(li);
+
+//                });
+//        }
+//    });
+//}
+//function tzggxx(title,sid) {
+
+//    layer.open({
+//        type: 2,
+//        title: title,
+//        shadeClose: true,
+//        shade: 0.5,
+//        maxmin: true, //开启最大化最小化按钮
+//        area: ['890px', '550px'],
+//        content: "/Users/Tzggxx/" + sid
+//    });
+//}
+</script>
+<div style="width:760px;margin:0 auto;height:260px;">
+    <div class="box_t">
+        <div class="box-ttt"><span>信息公示</span></div>
+    </div>
+    <div  id="scrollDiv">
+        <ul id="gsli">
+        </ul>
+    </div>
+</div>
+
+@*<div style="width:760px;margin:10px auto;height:240px;display:none;">
+    <div  id="liDiv">
+        <ul id="ggli">
+            <li><a href="javascript:(0)">这是公告标题的第一行</a></li>
+            <li>这是公告标题的第二行</li>
+            <li>这是公告标题的第三行</li>
+            <li>这是公告标题的第四行</li>
+            <li>这是公告标题的第五行</li>
+            <li>这是公告标题的第六行</li>
+            <li>这是公告标题的第七行</li>
+            <li>这是公告标题的第八行</li>
+        </ul></div>
+</div>*@

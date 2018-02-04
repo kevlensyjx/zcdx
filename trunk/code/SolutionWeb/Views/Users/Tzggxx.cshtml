@@ -1,0 +1,52 @@
+﻿
+@{
+    Layout = null;
+    var jsonModel = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Content/layui/layui.all.js"></script>
+    <script src="~/Content/JS/user.js"></script>
+    <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Content/Css/company/index.css" rel="stylesheet" />
+
+    <script type="text/javascript">
+        $(function () {
+            var initModel = JSON.parse('@jsonModel');
+            $("#NOTICE_TITLE").html(initModel.NOTICE_TITLE);
+            $("#NOTICE_CONTENT").html(initModel.NOTICE_CONTENT)
+            $("#CREATE_DT").html(initModel.CREATE_DT.replace('T',' '));
+
+        });
+    </script>
+
+    <title></title>
+</head>
+<body>
+    <h2 style="width:820px;text-align:center;margin: 5px auto;" id="NOTICE_TITLE"></h2>
+    <h3 style="width:820px;text-align:center;margin: 5px auto;" id="CREATE_DT"></h3>
+    <table class="layui-table" style="width:820px;margin: 10px auto;">
+        <tbody>
+            <tr>
+                <td id="NOTICE_CONTENT">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
+
+

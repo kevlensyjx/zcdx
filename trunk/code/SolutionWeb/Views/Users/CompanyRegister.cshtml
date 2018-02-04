@@ -1,0 +1,197 @@
+﻿@{
+    ViewBag.Title = "企业注册";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+<script type="text/javascript">
+    
+    function loadForm(form) {
+        form.verify({
+            yyzz: function (value, item) {
+                if ("" == value) {
+                    return '请上传营业执照';
+                }
+            },
+            zzjg: function (value, item) {
+                if ("" == value) {
+                    return '请上传组织机构代码证';
+                }
+            }
+        });
+    }
+    function loadUpload(upload) {
+
+        upload.render({
+            elem: '.uploadfile',
+            accept: 'images',
+            ext: 'jpg|jpeg',
+            size:2048,
+               before: function (obj) {
+                  layer.load(); //上传loading
+               },
+               error: function (index, upload) {
+                  layer.closeAll('loading'); //关闭loading
+               },
+               done: function (result, index, upload) {
+                  layer.closeAll('loading'); //关闭loading
+                  if (!result.Statu) { return; }
+                  if (result.Statu == "1") {
+                      $("#" + this.item[0].id + "img").html('<img src="' + result.Data.replace('Y', 'I') + '" onclick="zoomPic(\'' + result.Data + '\')" >');
+                      $("#FilePath" + this.item[0].id).val(result.Data);
+                      layer.alert(result.Msg, { title: '上传成功', icon: 1 });
+                  } else {
+                      layer.msg(result.Msg, { title: '上传失败', icon: 2 });
+                  }
+              }
+        })
+    }
+    function zoomPic(picurl) {
+        layer.open({
+            type: 2,
+            title: "证件预览",
+            shadeClose: true,
+            shade: 0.5,
+            maxmin: true,
+            area: ['860px', '570px'],
+            content: "/Content/ZoomPic/index.html?pic=" + picurl
+        });
+    }
+    function saveSubmit(data) {
+        $.ajax({
+            url: '/api/COMPANY/User/CompanyRegisterIn',
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            data: data,
+            type: "POST",
+            dataType: "JSON",
+            beforeSend: function () {
+                $("#loginBut").addClass("layui-btn-disabled");
+            },
+            success: function succCallback(result, textStatus) {//回调成功,
+                if (!result.Statu) { return; }
+                if (result.Statu == "1") {
+                    layer.alert(result.Msg, {
+                        title: '注册成功',
+                        icon: 1,
+                        closeBtn: 0
+                    }, function () {
+                        window.location.href = "/Users/Index";
+                    });
+
+
+                } else {
+                    ClickRemoveChangeCode();
+                    layer.alert(result.Msg, { title: '注册失败', icon: 0 });
+                }
+            },
+            complete: function () {
+                $("#loginBut").removeClass("layui-btn-disabled");
+            }
+        }).fail(
+        function (xhr, textStatus, err) {
+            $("#loginBut").removeClass("layui-btn-disabled");
+            layer.alert('注册失败，原因如下: ' + xhr.responseJSON.ExceptionMessage, { title: '注册失败', icon: 0 });
+        });
+
+    }
+</script>
+<div class="box_t">
+    <div class="box-ttt"><span>企业注册</span></div>
+</div>
+<div class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">企业帐号</label>
+        <div class="layui-input-inline" style="width: 350px;">
+            <input type="text" name="USER_NAME" required lay-verify="required|username" placeholder="请输入企业帐号" autocomplete="off" class="layui-input">
+        </div>
+        @*<div class="layui-form-mid layui-word-aux">请务必填写企业帐号</div>*@
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">企业密码</label>
+        <div class="layui-input-inline" style="width: 350px;">
+            <input type="password" name="PASSWORD" required lay-verify="required|pass" placeholder="请输入企业密码" autocomplete="off" class="layui-input">
+        </div>
+        @*<div class="layui-form-mid layui-word-aux">请务必填写密码</div>*@
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">企业名称</label>
+        <div class="layui-input-inline" style="width: 630px;margin-right:0px;">
+            <input type="text" name="CORP_NAME" required lay-verify="required" placeholder="请输入企业名称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">统一社会信用代码</label>
+        <div class="layui-input-inline" style="width: 630px;margin-right:0px;">
+            <input type="text" name="SOCIAL_CREDIT_CODE" id="SOCIAL_CREDIT_CODE" required lay-verify="required" placeholder="以工商营业执照为准" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">企业注册地址</label>
+        <div class="layui-input-inline" style="width: 630px;margin-right:0px;">
+            <input type="text" name="REGISTERED_ADDRESS" id="REGISTERED_ADDRESS" required lay-verify="required" placeholder="以工商营业执照为准" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">法定代表人</label>
+        <div class="layui-input-inline" style="width: 230px;">
+            <input type="text" name="LEGAL_PERSON" id="LEGAL_PERSON" required lay-verify="required" placeholder="以工商营业执照为准" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label">联系电话</label>
+        <div class="layui-input-inline" style="width: 280px;margin-right:0px;">
+            <input type="text" name="LEGAL_PERSON_PHONE" id="LEGAL_PERSON_PHONE" required lay-verify="required|phone" placeholder="法定代表人联系电话" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">经办人</label>
+        <div class="layui-input-inline" style="width: 230px;">
+            <input type="text" name="OPERATOR" id="OPERATOR" required lay-verify="required" placeholder="法人委托办理政策兑现事项申请的代理人" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label">联系电话</label>
+        <div class="layui-input-inline" style="width: 280px;margin-right:0px;">
+            <input type="text" name="OPERATOR_PHONE" id="OPERATOR_PHONE" required lay-verify="required|phone" placeholder="代理人联系电话" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">经办人证件号码</label>
+        <div class="layui-input-inline" style="width: 230px;">
+            <input type="text" name="OPERATOR_ID_NO" id="OPERATOR_ID_NO" required lay-verify="required|identity" placeholder="代理人身份证号码" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label">邮    箱</label>
+        <div class="layui-input-inline" style="width: 280px;margin-right:0px;">
+            <input type="text" name="EMIAL" id="EMIAL" required lay-verify="required|email" placeholder="联系企业办理政策兑现有关事宜时使用" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">注册资本</label>
+        <div class="layui-input-inline" style="width: 630px;margin-right:0px;">
+            <input type="text" name="REGISTERED_CAPITAL" id="REGISTERED_CAPITAL" required lay-verify="required" placeholder="以工商营业执照为准" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">营业执照</label>
+        <div class="layui-input-inline" style="width: 350px;">
+            <button class="layui-btn layui-btn-normal uploadfile" id="Yyzz" lay-data="{url: '/Users/UploadSingleFile', accept: 'images',ext: 'jpg|jpeg',size:2048}">上传营业执照</button>
+            <button class="layui-btn layui-btn-normal uploadfile" id="Zzjg" lay-data="{url: '/Users/UploadSingleFile', accept: 'images',ext: 'jpg|jpeg',size:2048}">上传组织机构代码证</button>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">证照预览</label>
+        <div style="float:left; width: 200px;height:150px;cursor:pointer;" id="Yyzzimg"></div>
+        <div style="float:left; width: 200px;height:150px;cursor:pointer;" id="Zzjgimg"></div>
+        <input type="hidden" id="FilePathYyzz" name="FilePathYyzz" required lay-verify="yyzz" lay-vertype="alert" />
+        <input type="hidden" id="FilePathZzjg" name="FilePathZzjg" required lay-verify="zzjg" lay-vertype="alert" />
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">验证码</label>
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" name="checkcode" required lay-verify="required" lay-vertype="msg" placeholder="请输入验证码" autocomplete="off" class="layui-input" style="width:100px;">
+        </div>
+        <div style="float:left; width: 100px;">
+            <img src="/Home/CheckCode/1" id="imgCode" alt="单击可刷新" title="看不清,单击换一张" onclick="ClickRemoveChangeCode()" style="cursor: pointer;width:80px;height:38px;" />
+        </div>
+    </div>
+    <div class="layui-form-item" style="padding-left:150px;">
+        <button id="loginBut" class="layui-btn layui-btn-normal" lay-submit lay-filter="loginBut"> 注 册 </button>
+    </div>
+</div>
+

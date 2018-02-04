@@ -1,0 +1,344 @@
+﻿@{
+    var jsonModel = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>@ViewBag.Title</title>
+        @Scripts.Render("~/jquery-easyui/js")
+        @Scripts.Render("~/Content/viewModel")
+        @Styles.Render("~/jquery-easyui/css")
+
+        @Scripts.Render("~/Content/js")
+        @Styles.Render("~/Content/css")
+    <script type="text/javascript" src="~/Scripts/Sign.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            document.oncontextmenu = function (e) {
+                return false; // 主页面不允许右键（兼容多浏览器）
+            }
+            var initModel = ko.toJS(@jsonModel);
+            var myViewModel = new viewModel(initModel);
+            ko.applyBindings(myViewModel);
+        });
+<<<<<<< .mine
+        function printdiv(printpage) {
+            var headstr = "<html><head><title></title></head><body>";
+            var footstr = "</body>";
+            var newstr = document.all.item(printpage).innerHTML;
+            var oldstr = document.body.innerHTML;
+            document.body.innerHTML = headstr + newstr + footstr;
+            window.print();
+            document.body.innerHTML = oldstr;
+            return false;
+        }
+||||||| .r196
+=======
+
+       
+>>>>>>> .r235
+    </script>
+</head>
+<body>
+    
+    @RenderBody()
+    <div id='buttonTemplate' style="display: none;">
+        <a id="a_refresh" href="javascript:void(0);" plain="true" class="easyui-linkbutton" icon="icon-arrow_refresh" title="刷新" data-bind="click: $root.refreshHandle">刷新</a>
+        <a id="a_add" data-options="disabled: true" style="display: none;" href="javascript:void(0);" plain="true" class="easyui-linkbutton" icon="icon-add" title="新增" data-bind="click: $root.addHandle">新增</a>
+        <a id="a_edit" data-options="disabled:true" style="display: none;" href="javascript:void(0);" plain="true" class="easyui-linkbutton" icon="icon-edit" title="编辑" data-bind="click: $root.updateHandle">编辑</a>
+        <a id="a_del" data-options="disabled:true" style="display: none;" href="javascript:void(0);" plain="true" class="easyui-linkbutton" icon="icon-cross" title="删除" data-bind="click: $root.deleteHandle">删除</a>
+        <a id="a_selectdel" data-options="disabled:true" style="display: none;" href="javascript:void(0);" plain="true" class="easyui-linkbutton" icon="icon-cross" title="勾选删除" data-bind="click: $root.deleteSelectHandle">勾选删除</a>
+        <a id="a_searchdel" data-options="disabled:true" style="display: none;" href="javascript:void(0);" plain="true" class="easyui-linkbutton" icon="icon-cross" title="查询删除" data-bind="click: $root.deleteSearchHandle">查询删除</a>
+        <a id="a_excelin" data-options="disabled:true" style="display: none;" href="javascript:void(0);" plain="true" class="easyui-linkbutton" icon="icon-disk_download" title="导入" data-bind="click: $root.inExcelHandle">导入</a>
+        <a id="a_excelout" data-options="disabled:true" style="display: none;" href="javascript:void(0);" plain="true" class="easyui-linkbutton" icon="icon-page_excel" title="导出" data-bind="click: $root.outExcelHandle">导出</a>
+        <a id="a_single" data-options="disabled:true" style="display: none;" href="javascript:void(0);" plain="true" class="easyui-linkbutton" icon="icon-page_excel" title="导出" data-bind="click: $root.singleExcelHandle">导出</a>
+        <a id="a_showhide" data-options="disabled:true" style="display: none;" href="javascript:void(0);" plain="true" class="easyui-linkbutton" icon="icon-shield" title="显示/隐藏列" data-bind="click: $root.showHideColumnHandle">显示列</a>
+    </div>
+    <input id="workid" type="hidden" value="C7D9FB2855300001515C85397EA51CD0" />
+    <div id='searchTemplate' style="display: none;">
+        &nbsp;<a id="searchBut" href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search'" data-bind="click: $root.searchHandle">查询</a>
+        &nbsp;<a id="resetBut" href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-undo'" data-bind="click: $root.clearHandle">重置</a>
+    </div>
+
+    <div id='saveTemplate' style="display: none;">
+        <a id="saveBut" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" data-bind="click: $root.saveHandle">保 存</a>
+        <a id="cancelBut" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" data-bind="click: $root.closeHandle">取 消</a>
+    </div>
+
+
+    <div id="InExcel" class="easyui-window" data-options="modal:true,closed:true,minimizable:false,maximizable:false,collapsible:false,resizable:false" style="width: 650px; height: 400px;display: none;">
+        <div class="easyui-layout" fit="true">
+            <div region="north" border="false" style="float: left; overflow: hidden; padding: 3px;">
+                <form id="InExcelForm" method="post" enctype="multipart/form-data">
+                    <table class="z-selectbar">
+                        <tr>
+                            <td>
+                                <span id="uploadPlanTypeSpan" style="width: 100px; display: none;">&nbsp;<input id="uploadPlanType" name="uploadPlanType" style="width: 100px; display: none;" type="text" /></span>
+                                &nbsp;<input class="easyui-filebox" id="excelurl" name="excelurl" style="width: 400px" data-options="required:true,buttonText:'选择Excel文件',buttonAlign: 'right'"><input type="file" name="excelurlie" id="excelurlie" style="width: 350px" title="选择Excel文件" />
+                                <span id="syPlanDateSpan" style="width: 100px; display: none;"><input id="syindate" class="easyui-datebox" style="width: 100px;" /></span>
+                                &nbsp;<a href="javascript:void(0);" id="excelBut" class="easyui-linkbutton" data-options="iconCls:'icon-page_excel'" data-bind="click: $root.selectExcelHandle">导 入</a><input type="hidden" id="notstation" />
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div region="center" border="false" style="border-top: 1px solid #8db2e3">
+                <table id="error_grid"></table>
+            </div>
+        </div>
+    </div>
+
+    <div id="apply_info" class="easyui-window" data-options="modal:true,closed:true,minimizable:false,maximizable:false,collapsible:false,resizable:false,title:'申请信息'" style="width: 700px; height: 540px;">
+        <div class="easyui-layout" data-options="fit:true">
+            <form id="DataForm" method="post">
+               
+                <div data-options="region:'center',border:false" style="padding: 10px;">
+                    <div style="width:100%;text-align:center;font-size:18px;">山西转型综合改革示范区政策兑现事项申请表(<span id="apply_item_type_show"></span>)</div>
+                    <div style="width:100%;text-align:left;font-size:13px;margin-top:5px">&nbsp;&nbsp;&nbsp;&nbsp;编号：<span id="apply_number_show"></span></div>
+                    <table class="nrgl_down_tab">
+                        <tr>
+                            <th style="width:100px;">企业名称</th>
+                            <td>
+                                <span id="corp_name_show"></span>
+                            </td>
+                            <th style="width:100px;">
+                                统一社会<br />信用代码
+                            </th>
+                            <td>
+                                <span id="social_c_code_show"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>企业注册地址</th>
+                            <td colspan="3">
+                                <span id="reg_address_show"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>法定代表人</th>
+                            <td>
+                                <span id="legal_p_show"></span>
+                            </td>
+                            <th>
+                                联系电话
+                            </th>
+                            <td>
+                                <span id="legal_p_phone_show"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>经办人</th>
+                            <td>
+                                <span id="operator_show"></span>
+                            </td>
+                            <th>
+                                联系电话
+                            </th>
+                            <td>
+                                <span id="operator_phone_show"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>经办人证件号码</th>
+                            <td>
+                                <span id="operator_id_no_show"></span>
+                            </td>
+                            <th>
+                                邮    箱
+                            </th>
+                            <td>
+                                <span id="emial_show"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>注册资本</th>
+                            <td colspan="3">
+                                <span id="registered_capital_show"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>申请政策<br />兑现项目</th>
+                            <td colspan="3">
+                                <span id="apply_item_info_show"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>申请金额(万元)</th>
+                            <td colspan="3">
+                                大写:<span id="apply_m_w_show"></span>&nbsp;&nbsp;小写:<span id="apply_m_n_show"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="height:10px">印证材料名称</th>
+                            <td colspan="3" style="padding-left:0px;">
+                                <span id="file_info_show"></span>
+                            </td>
+                        </tr>
+                        <tr id="tr_psl" style="display: none">
+                            <th style="height: 100px">企业承诺</th>
+                            <td colspan="3">
+                                1.本企业郑重承诺《山西转型综合改革示范区政策兑现事项申请表(评审类)》中所填报的信息及所提供的材料均真实、准确、有效，对所提供材料，依法承担法律责任。<br />
+                                2.本企业郑重承诺收到的奖励金额将按照国家有关财务会计制度及时做好账务处理，如果产生任何经济和法律责任均由本公司承担。<br />
+                                3.本企业郑重承诺上年度未受到环保、安监部门的行政处罚，未被工商部门列入经营异常名录，且并无不良信用记录和违规营业行为。<br />
+                                &nbsp;法定代表人（签字）：<br />
+                                <div style='margin-right: 100px;text-align:right'>企业公章：</div>
+                                <div style='margin-right: 20px;text-align:right'> &nbsp;&nbsp;&nbsp;年&nbsp;&nbsp;&nbsp;月&nbsp;&nbsp;&nbsp;日</div>
+
+                            </td>
+                        </tr>
+                        <tr id="tr_phl" style="display: none">
+                            <th style="height: 100px">企业承诺</th>
+                            <td colspan="3">
+                                1.本企业郑重承诺《山西转型综合改革示范区政策兑现事项申请表(普惠类)》中所填报的信息及所提供的材料均真实、准确、有效，对所提供材料，依法承担法律责任。<br />
+                                2.本企业郑重承诺收到的奖励金额将按照国家有关财务会计制度及时做好账务处理，如果产生任何经济和法律责任均由本公司承担。<br />
+                                3.本企业郑重承诺上年度未受到环保、安监部门的行政处罚，未被工商部门列入经营异常名录，且并无不良信用记录和违规营业行为。<br />
+                                &nbsp;法定代表人（签字）：<br />
+                                <div style='margin-right: 100px;text-align:right'>企业公章：</div>
+                                <div style='margin-right: 20px;text-align:right'> &nbsp;&nbsp;&nbsp;年&nbsp;&nbsp;&nbsp;月&nbsp;&nbsp;&nbsp;日</div>
+
+                            </td>
+                        </tr>
+                        <tr id="tr_htl" style="display:none">
+                            <th style="height:100px">企业承诺</th>
+                            <td colspan="3">
+                                1.本企业郑重承诺《山西转型综合改革示范区政策兑现事项申请表(合同类)》中所填报的信息及所提供的材料均真实、准确、有效，对所提供材料，依法承担法律责任。
+                                2.本企业郑重承诺收到的奖励金额将按照国家有关财务会计制度及时做好账务处理，如果产生任何经济和法律责任均由本公司承担。
+                                3.本企业郑重承诺合同期内未受到环保、安监部门的行政处罚，未被工商部门列入经营异常名录，且并无不良信用记录和违规营业行为。
+                                &nbsp;法定代表人（签字）：<br />
+                                <div style='margin-right: 100px;text-align:right'>企业公章：</div>
+                                <div style='margin-right: 20px;text-align:right'> &nbsp;&nbsp;&nbsp;年&nbsp;&nbsp;&nbsp;月&nbsp;&nbsp;&nbsp;日</div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="company_info" class="easyui-window" data-options="modal:true,closed:true,minimizable:false,maximizable:false,collapsible:false,resizable:false,title:'审批信息'" style="width: 700px; height: 540px;">
+        <input name="b_print" type="button" class="ipt" onClick="printdiv('div_print');" value="Print">
+        <div id="div_print" class="easyui-layout" data-options="fit:true">
+          
+                <div data-options="region:'center',border:false" style="padding: 10px;">
+                    <div style="width:100%;text-align:center;font-size:18px;">山西转型综合改革示范区政策兑现事项申请表(<span id="apply_item_type"></span>)</div>
+                    <div style="width:100%;text-align:left;font-size:13px;margin-top:5px">&nbsp;&nbsp;&nbsp;&nbsp;编号：<span id="apply_number"></span></div>
+                    <table class="nrgl_down_tab">
+                        <tr>
+                            <th>企业名称</th>
+                            <td>
+                                <span id="corp_name"></span>
+                                <input type="hidden" name="sid_temp" id="sid_temp" />
+                                <input type="hidden" name="status_code_temp" id="status_code_temp" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="width: 80px">申请政策<br />兑现项目</th>
+                            <td>
+                                <span id="apply_item_info"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="height:100px">受理意见</th>
+                            <td>
+                                <span id="handle_content_1"></span>
+                                @*<input style="width: 145px;" data-bind="comboboxSource: extB, comboboxValue:addForm.CASHING_WAY, easyuiOptions: { required: true, valueField: 'id', textField: 'text',editable:false  }" />
+                                    <input data-bind="value: addForm.SID" type="hidden" />*@
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="height:100px">业务部门<br />审核意见</th>
+                            <td>
+                                <span id="handle_content_2"></span>
+                            </td>
+                        </tr>
+                        <tr id="tr_bmhs" style="display:none">
+                            <th style="height:50px">部门会审</th>
+                            <td style="padding-top:4px; padding-left: 0px;padding-right: 0px;">
+                                <span id="handle_content_3"></span>
+
+                            </td>
+                        </tr>
+                        <tr id="tr_xmpj" style="display:none">
+                            <th style="height:100px">综合<br />评审意见</th>
+                            <td>
+                                <span id="handle_content_4"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="height:100px">分管领导<br />意见</th>
+                            <td>
+                                <span id="handle_content_5"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="height:100px">公示结果</th>
+                            <td>
+                                <span id="handle_content_6"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="height:100px">财政拨付</th>
+                            <td>
+                                <span id="handle_content_7"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            
+        </div>
+    </div>
+
+    <div id="bank_info" class="easyui-window" data-options="modal:true,closed:true,minimizable:false,maximizable:false,collapsible:false,resizable:false,title:'银行信息'" style="width: 700px; height: 340px;">
+        <div class="easyui-layout" data-options="fit:true">
+                <div data-options="region:'center',border:false" style="padding: 10px;">
+                    <table class="nrgl_down_tab">
+                        <tr>
+                            <th style="width:100px;">单位名称</th>
+                            <td>
+                                <span id="bank_corp_name_show"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="width:100px;">开户银行</th>
+                            <td>
+                                <span id="bank_name_show"></span>
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            <th>银行账号</th>
+                            <td >
+                                <span id="bank_acount_show"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>增值税号</th>
+                            <td>
+                                <span id="bank_vat_no_show"></span>
+                            </td>
+                           
+                        </tr>
+                        <tr>
+                            <th>地址</th>
+                            <td>
+                                <span id="bank_company_address_show"></span>
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            <th>电话</th>
+                            <td>
+                                <span id="bank_company_phone_show"></span>
+                            </td>
+                            
+                        </tr>
+                    </table>
+                </div>
+        </div>
+    </div>
+</body>
+</html>

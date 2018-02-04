@@ -1,0 +1,61 @@
+﻿<#@ template language="C#" hostspecific="True"#> 
+<#@include file="Manager.ttinclude"#>  
+<#+
+	private  void Create(string[] dllurls) {
+		Manager manager = Manager.Create(Host, GenerationEnvironment);
+		string solutionDir = Host.ResolveAssemblyReference("$(SolutionDir)");
+		foreach(string dllurl in dllurls)
+		{
+		    byte[] fileData = File.ReadAllBytes(Path.Combine(solutionDir, dllurl));
+            Assembly assembly = Assembly.Load(fileData);
+			foreach(Type entity in assembly.ExportedTypes)
+			{
+		        if(!entity.Name.Contains("Entities") && !entity.Name.StartsWith("VIEW") && !entity.Name.StartsWith("POCO")&& !entity.FullName.Contains("+") && !entity.Name.EndsWith("Model"))
+				{
+				manager.StartNewFile("VIEW_"+entity.Name + ".cs"); 
+#>  
+<#=Createx(entity) #>  
+<#+
+				manager.EndBlock(); 
+			   }
+            }
+		}
+		manager.Process(true);
+    }
+	private string Createx(Type entity) {
+		string str ="using System;\n";
+		str +="using System.Collections.Generic;\n";
+		str +="namespace SolutionWeb.ViewModels\n";
+		str +="{\n";
+		str +="\tpublic partial class VIEW_"+entity.Name+"{\n";
+		str +="\t\tpublic string page { get; set; }\n";
+		str +="\t\tpublic string rows { get; set; }\n";
+		str +="\t\tpublic string sort { get; set; }\n";
+		str +="\t\tpublic string order { get; set; }\n";
+		str +="\t\tpublic string editcellname { get; set; }\n";
+		foreach (System.Reflection.PropertyInfo pi in entity.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly))
+
+		{
+			if(!pi.GetAccessors()[0].IsVirtual)
+			{
+				str +="\t\tpublic "+GetTypeName(pi.PropertyType.FullName)+" "+pi.Name +"{ get; set; }\n";
+			}
+		}
+		str +="\t}\n";
+		str +="}";
+		return str;
+	}
+	private string GetTypeName(string TypeName){
+		string str=TypeName;
+        if(TypeName.IndexOf("System.String")>-1){str="string";}
+        if(TypeName.IndexOf("System.DateTime")>-1){str="System.DateTime";}
+        if(TypeName.IndexOf("System.Int16")>-1){str="int";}
+        if(TypeName.IndexOf("System.Int32")>-1){str="int";}
+        if(TypeName.IndexOf("System.Int64")>-1){str="int";}
+        if(TypeName.IndexOf("System.Decimal")>-1){str="decimal";}
+        if(TypeName.IndexOf("System.Byte")>-1){str="decimal";}
+        if(TypeName.IndexOf("System.Boolean")>-1){str="bool";}
+        if(TypeName.IndexOf("System.Nullable")>-1){str="Nullable<"+str+">";}
+		return str;
+    }
+#>

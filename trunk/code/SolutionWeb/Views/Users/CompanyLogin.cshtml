@@ -1,0 +1,118 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Content/layui/layui.all.js"></script>
+    <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+
+    <script type="text/javascript">
+        $(function () {
+            var form = layui.form;
+            form.on('submit(loginBut)', function (data) {
+                if ($("#loginBut").attr("class").indexOf("layui-btn-disabled") == "-1") {//重复提交
+                    saveSubmit(data.field);
+                }
+                return false;
+            });
+        });
+    function saveSubmit(data) {
+
+        $.ajax({
+            url: '/Users/CompanyLoginIn',
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            data: data,
+            type: "POST",
+            dataType: "JSON",
+            beforeSend: function () {
+                $("#loginBut").addClass("layui-btn-disabled");
+            },
+            success: function succCallback(result, textStatus) {//回调成功,
+                if (!result.Statu) { return; }
+                if (result.Statu == "1") {
+                    window.location.href = result.BackUrl;
+                } else {
+                    ClickRemoveChangeCode();
+                    layer.alert(result.Msg, { title: '登录失败', icon: 0 });
+                }
+            },
+            complete: function () {
+                $("#loginBut").removeClass("layui-btn-disabled");
+            }
+        }).fail(
+        function (xhr, textStatus, err) {
+            $("#loginBut").removeClass("layui-btn-disabled");
+            layer.alert('登录失败，原因如下: ' + xhr.responseJSON.ExceptionMessage, { title: '登录失败', icon: 0 });
+        });
+
+    }
+    function ClickRemoveChangeCode() {
+        var code = $("#imgCode").attr("src");
+        $("#imgCode").attr("src", code + "1");
+    }
+    </script>
+
+    <style>
+        body {
+            background: url('../../Content/images/loginbg.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            text-align:center;
+        }
+    </style>
+    <title>企业登录</title>
+</head>
+<body>
+    <div style="margin:0 auto;margin-top:50px;text-align:center;"><img src="~/Content/images/logintitle.png" /></div>
+    <div style="margin:0 auto;margin-top:20px;text-align:center;"><img src="~/Content/images/loginname.png" /></div>
+        <div style="margin:0 auto;margin-top:40px;width:538px;height:395px;background-image:url('../../Content/images/logindl.png')">
+            <div class="layui-form layui-form-pane" style="padding-top:120px;padding-left:110px;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">企业帐号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="username" required lay-verify="required|username" placeholder="请输入企业帐号" autocomplete="off" class="layui-input">
+                    </div>
+                    @*<div class="layui-form-mid layui-word-aux">请务必填写企业帐号</div>*@
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">企业密码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" name="password" required lay-verify="required|pass"  placeholder="请输入企业密码" autocomplete="off" class="layui-input">
+                    </div>
+                    @*<div class="layui-form-mid layui-word-aux">请务必填写密码</div>*@
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">验证码</label>
+                    <div class="layui-input-inline" style="width: 90px;">
+                        <input type="text" name="checkcode" required lay-verify="required" placeholder="请输入验证码" autocomplete="off" class="layui-input" style="width:100px;">
+                    </div>
+                    <div style="float:left; width: 100px;">
+                        <img src="/Home/CheckCode/1" id="imgCode" alt="单击可刷新" title="看不清,单击换一张" onclick="ClickRemoveChangeCode()" style="cursor: pointer;width:80px;height:38px;" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <button id="loginBut" class="layui-btn layui-btn-normal" lay-submit lay-filter="loginBut"> 登 录 </button>
+                    <a href="/Users/CompanyRegister" class="layui-btn layui-btn-normal" target="_self"> 注 册 </a>
+                </div>
+            </div>
+        </div>
+    <div style="margin:0 auto;margin-top:20px;text-align:center;color:#ffffff">山西转型综合改革示范区管理委员会 &copy; 版权所有　电话：0351-7199976  7199979　传真：0351-7199979　晋ICP备17009227号</div>
+</body>
+</html>
+
+
+

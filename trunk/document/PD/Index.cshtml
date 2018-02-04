@@ -1,0 +1,592 @@
+﻿@{
+    ViewBag.Title = "门卡管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Content/JS/Constant.js"></script>
+<script src="~/Content/JS/utils.js"></script>
+<script type="text/javascript">
+    var num = 0;
+    var EmptyMember = { "id": "", "text": " ", "state": "open", "iconCls": "icon-user", "checked": false, "attributes": [], "children": [] };
+    var EditMemberIDBefore = "";
+    $(function() {
+        $('#inperson').datagrid({
+            data: [],
+            fit: true,
+            fitColumns: true,
+            columns: [
+                [
+                    { field: 'GATE_NAME', title: '作业门', width: 100, align: 'center' },
+                    { field: 'LINE_NAME', title: '线名', width: 100, align: 'center' },
+                    { field: 'LINE_DIR', title: '行别', width: 50, align: 'center' },
+                    { field: 'MILEAGE_COORDINATE', title: '里程坐标', width: 100, align: 'center' },
+                    {
+                        title: '操作',
+                        field: 'optype',
+                        width: 50,
+                        align: 'center',
+                        formatter: function(value) {
+                            if (value == "1")
+                                return "+";
+                            else if (value == "2")
+                                return "-";
+                            else
+                                return"";
+                        },
+                        styler: function(value) {
+                            if (value > 1) {
+                                //删除
+                                return 'background-color:#ffee00;color:#248ABA;';
+                            }
+                            //新增
+                            return 'background-color:#248ABA;color:#ffee00;';
+                        }
+                    },
+                    {
+                        title: '操作时间',
+                        field: 'optime',
+                        width: 150,
+                        align: 'center',
+                        formatter: function(value) {
+                            if (value) {
+                                return utils.fomatDateTime(value);
+                            }
+                        }
+                    },
+                    {
+                        title: '操作结果',
+                        field: 'opresu',
+                        width: 60,
+                        align: 'center',
+                        formatter: function(value, row) {
+                            if (value == "0" && row.optype == "2")
+                                return utils.formatString('<a href="#" title="强制解除开门开与作业门关系" style="text-decoration:underline;color:blue" onclick="singleUnBind(\'{0}\')">强制解除</a>', row.PKID + '!' + row.cardno);
+                            else if (value == "0" && row.optype == "1")
+                                return utils.formatString('<a href="#" title="重新发送开门开与作业门关系" style="text-decoration:underline;color:blue" onclick="singleBind(\'{0}\')">重新发送</a>', row.PKID + '!' + row.cardno);
+                            else if (value == "1")
+                                return "成功";
+                            else
+                                return "";
+                        }
+
+                    }, {
+                        title: '操作成功时间',
+                        field: 'listdate',
+                        width: 150,
+                        align: 'center',
+                        formatter: function(value) {
+                            if (value) {
+                                return utils.fomatDateTime(value);
+                            }
+                        }
+                    }
+                ]
+            ]
+        });
+        //部门联动部门人员
+        $('#deptcodeadd').combotree({
+            onSelect: function(item) {
+                $.ajax({
+                    url: '/GATE/ACCESS_GATE_BDATA_CARD/GetORGMemberEasyUITreeByDeptCode/',
+                    data: { "DEPT_CODE": item.id },
+                    cache: false,
+                    dataType: 'JSON',
+                    type: 'post',
+                    async: false,
+                    success: function(memberdata) {
+                        //memberdata.unshift(EmptyMember);
+                        //$('input[type="hidden"][name="dept_code_hide"]').val(item.id);
+                        var memberid = $('#memberid');
+                        if (num > 0) {
+                            memberid.combotree('clear');
+                        }
+                        num++;
+                        memberid.combotree('loadData', memberdata);
+                    }
+                });
+                $.ajax({
+                    url: '/GATE/ACCESS_GATE_BDATA_CARD/GetORGGateEasyUITreeByDeptCode/',
+                    data: { "DEPT_CODE": item.id },
+                    cache: false,
+                    dataType: 'JSON',
+                    type: 'post',
+                    async: false,
+                    success: function(gatedata) {
+                        //memberdata.unshift(EmptyMember);
+                        //$('input[type="hidden"][name="dept_code_hide"]').val(item.id);
+                        var gateno = $('#gateno');
+                        if (num > 0) {
+                            gateno.combotree('clear');
+                        }
+                        num++;
+                        gateno.combotree('loadData', gatedata);
+                    }
+                });
+            }
+        });
+    });
+
+    function loadExt(viewModel, funcName) {
+        if (funcName == "afterLoad") {
+            loadGrid(viewModel.urls.list());
+        }
+        if (funcName == "beforeAdd") {
+            viewModel.addForm.PKID("");
+            $('#cardno').textbox('readonly', false);
+            $('#doorcardno').textbox('readonly', false);
+            $('#gateno').combotree('clearChecked');
+
+
+        }
+        if (funcName == "afterEdit") {
+            var peoplememberid = viewModel.addForm.MEMBER_ID() == null ? "" : viewModel.addForm.MEMBER_ID();
+            var selectrow = $('#data_grid')["datagrid"]('getSelected');
+            var peoplegird = selectrow.people;
+            var peoplephone = selectrow.phoneNo;
+            var cardsecid = selectrow.cardsection;
+            var doorcardno = selectrow.DOOR_CARD_NO;
+            var cardsectext = "";
+            for (var i = 0; i < Gate_CardSectionJson.length; i++) {
+                if (cardsecid == Gate_CardSectionJson[i].id) cardsectext = Gate_CardSectionJson[i].text;
+            }
+            var peopleinfo = "";
+            if (peoplegird != null && peoplephone != null) {
+                peopleinfo = peoplegird + "-" + peoplephone;
+                $('#memberid').combotree('setValue', peoplememberid).combotree("setText", peopleinfo);
+            } else {
+                $('#memberid').combotree('clear');
+                $('#memberid').combotree('loadData', viewModel.extA());
+
+            }
+            $('#cardno').textbox('readonly', true);
+            if (doorcardno == null)
+                $('#doorcardno').textbox('readonly', false);
+            else if (doorcardno.length == 8)
+                $('#doorcardno').textbox('readonly', true);
+            else
+                $('#doorcardno').textbox('readonly', false);
+
+            //设置门禁卡信息
+            viewModel.addForm.PKID(viewModel.addForm.CARD_NO());
+            var gateno = viewModel.addForm.GATENO() == null ? "" : viewModel.addForm.GATENO();
+            if (gateno != "") {
+                $('#gateno').combotree('clearChecked');
+                $('#gateno').combotree('tree').tree('collapseAll');
+
+                for (var i = 0; i < gateno.split(',').length; i++) {
+                    $('#gateno').combotree('expandParentNode', gateno.split(',')[i]);
+                }
+            } else {
+                $('#gateno').combotree('clearChecked');
+                // $('#gateno').combotree('loadData', viewModel.extD());
+            }
+        }
+        if (funcName == "beforeSave") {
+            viewModel.addForm.DEPT_CODE($('input[type="hidden"][name="deptcodetaddname"]').val());
+        }
+        if (funcName == "beforeSubmit") {
+            var gatetree = $('#gateno').combotree('tree'); // 获取树对象
+            var gatetreenodes = gatetree.tree('getChecked'); // 获取选择的节点
+            var gateno = "";
+            for (var i = 0; i < gatetreenodes.length; i++) {
+                gateno += gatetreenodes[i].id + ",";
+            }
+            gateno = gateno.substring(0, gateno.length - 1);
+            viewModel.addForm.GATENO(gateno);
+
+        }
+
+    }
+
+    function loadGrid(listurl) {
+        $('#data_grid').datagrid({
+            url: listurl,
+            pagination: true,
+            pageSize: 20,
+            pageList: [10, 20, 30, 40, 50],
+            fit: true,
+            fitColumns: true,
+            nowrap: false,
+            rownumbers: true,
+            singleSelect: true,
+            border: 0,
+            idField: 'CARD_NO',
+            sortName: 'deptcode',
+            sortOrder: 'desc',
+
+            columns: [
+                [
+                    {
+                        title: '单位',
+                        field: 'deptname1',
+                        width: 150,
+                        align: 'left',
+                        halign: 'center'
+                    },
+                    {
+                        title: '车间',
+                        field: 'deptname2',
+                        width: 150,
+                        align: 'left',
+                        halign: 'center'
+                    },
+                    {
+                        title: '工区',
+                        field: 'deptname3',
+                        width: 150,
+                        align: 'left',
+                        halign: 'center'
+
+                    },
+                    {
+                        title: '持卡人',
+                        field: 'people',
+                        width: 100,
+                        align: 'center'
+                    },
+                    {
+                        title: '开门卡号',
+                        field: 'DOOR_CARD_NO',
+                        width: 120,
+                        align: 'left',
+                        halign: 'center',
+                        formatter: function(value, row, index) {
+                            if (value) {
+                                if (row.cardtype == '0' && row.havegate != "0")
+                                    return utils.formatString('{0}&nbsp;&nbsp;<a href="#" title="点击查看该卡绑定门禁" style="text-decoration:underline;color:blue" onclick="findGateInfo(\'{1}\')"><span class="icon icon-wooden">&nbsp;</span></a>', value, row.DOOR_CARD_NO);
+                                else {
+                                    return value;
+                                }
+                            }
+                        },
+                        styler: function(value, row) {
+                            if (row.state == 0) {
+                                return 'background-color:#ffee00;color:#248ABA;';
+                            }
+                        }
+                    },
+                    {
+                        title: '身份卡号',
+                        field: 'CARD_NO',
+                        width: 120,
+                        align: 'left',
+                        halign: 'center'
+                    },
+                    {
+                        title: '手机号',
+                        field: 'phoneNo',
+                        width: 110,
+                        align: 'center'
+                    },
+                    {
+                        title: '建档时间',
+                        field: 'insertDate',
+                        width: 150,
+                        align: 'center',
+                        formatter: function(value) {
+                            return utils.ChangeDateFormat(value);
+                        }
+                    },
+                    //{
+                    //    title: '废弃时间',
+                    //    field: 'delDate',
+                    //    width: 150,
+                    //    align: 'center',
+                    //    formatter: function(value) {
+                    //        if (value) {
+                    //            return utils.ChangeDateFormat(value);
+                    //        }
+                    //    }
+                    //},
+                    {
+                        title: '备注',
+                        field: 'memo',
+                        width: 150,
+                        align: 'center'
+                    }
+                ]
+            ]
+        });
+    }
+
+    //扩展easyui表单的验证  
+    $.extend($.fn.validatebox.defaults.rules, {
+        //验证人员ID 
+        member: {
+            //value值为文本框中的值  
+            validator: function(value) {
+                if (value == " ") {
+                    return true;
+                } else {
+                    return value.indexOf('-') >= 0;
+                }
+            },
+            message: '请选择人员.'
+        },
+        gatenocheck: {
+            validator: function(value, param) {
+                var checkednodes = $(param[0]).combotree('tree').tree('getChecked');
+                var gatecheck_flag = true;
+                for (var i = 0; i < checkednodes.length; i++) {
+                    if (checkednodes[i].text.indexOf('-') < 0) //清除选择
+                    {
+                        gatecheck_flag = false;
+                        break;
+                    }
+                }
+                return gatecheck_flag;
+            },
+            message: '请正确选择门禁.'
+        }
+
+    });
+    $.extend($.fn.combotree.methods, {
+        clearChecked: function(jq) {
+            var Checkednodes = jq.combotree('tree').tree('getChecked');
+            for (var i = 0; i < Checkednodes.length; i++) {
+                jq.combotree('tree').tree('uncheck', Checkednodes[i].target); //清除选择
+            }
+        }
+    });
+    $.extend($.fn.combotree.methods, {
+        expandParentNode: function(jq, childnode) {
+            var Node = jq.combotree('tree').tree('find', childnode);
+            jq.combotree('tree').tree('check', Node.target);
+            var ParNode = jq.combotree('tree').tree('getParent', Node.target);
+            if (ParNode != null) {
+                jq.combotree('tree').tree('expand', ParNode.target);
+                var ParParNode = jq.combotree('tree').tree('getParent', ParNode.target);
+                if (ParParNode != null) {
+                    jq.combotree('tree').tree('expand', ParParNode.target);
+                    var ParParParNode = jq.combotree('tree').tree('getParent', ParParNode.target);
+                    if (ParParParNode != null) {
+                        jq.combotree('tree').tree('expand', ParParParNode.target);
+                    }
+                }
+            }
+        }
+    });
+
+    //解绑
+    function unbindClick() {
+        var row = $('#data_grid').datagrid('getSelected');
+        if (row) {
+            if (row.state != Gate_CardState_IsBind) {
+                $.alertMsg("请选择门卡状态为已绑定的行！", '操作提示', null);
+                return;
+            }
+            if (row.DOOR_CARD_NO != null) {
+                $.messager.confirm('请确认', '您确定要对选择的行进行</br>【解绑】吗？', function(b) {
+                    if (b) {
+                        $.ajax({
+                            url: '/GATE/ACCESS_GATE_BDATA_CARD/unBind/' + row.DOOR_CARD_NO,
+                            cache: false,
+                            dataType: 'JSON',
+                            success: function(result) {
+                                $.procAjaxMsg(result, function() {
+                                    $('#data_grid').datagrid('reload');
+                                    $.alertMsg(result.Msg, '操作提示', null);
+                                }, function() {
+                                    $.alertMsg(result.Msg, '操作提示', null);
+                                });
+                            }
+                        });
+                    }
+                });
+            } else {
+                $.alertMsg("请选择已绑定开门卡号的行！", '操作提示', null);
+                return;
+            }
+        } else {
+            $.alertMsg("请先选择要解绑的行！", '操作提示', null);
+        }
+    }
+
+    //废弃
+    function abandonClick() {
+        var row = $('#data_grid').datagrid('getSelected');
+        if (row) {
+            if (row.state != Gate_CardState_IsDel) {
+                if (row.people != null && row.people != "" || row.tool != null && row.tool != "") {
+                    $.alertMsg("请先解绑！", '操作提示', null);
+                    return;
+                }
+                $.messager.confirm('请确认', '您确定要对选择的行进行</br>【废弃操作】吗？', function(b) {
+                    if (b) {
+                        $.ajax({
+                            url: '/GATE/ACCESS_GATE_BDATA_CARD/Abandon/' + row.CARD_NO,
+                            cache: false,
+                            dataType: 'JSON',
+                            success: function(result) {
+                                $.procAjaxMsg(result, function() {
+                                    $('#data_grid').datagrid('reload');
+                                    $.alertMsg(result.Msg, '操作提示', null);
+                                }, function() {
+                                    $.alertMsg(result.Msg, '操作提示', null);
+                                });
+                            }
+                        });
+                    }
+                });
+            } else {
+                $.alertMsg("已经废弃的门卡不能再次进行废弃操作！", '操作提示', null);
+            }
+        } else {
+            $.alertMsg("请先选择要废弃的行！", '操作提示', null);
+        }
+    }
+
+    //根据卡号查询门禁信息
+    function findGateInfo(card_no) {
+        $('#mygate').dialog('setTitle', '开门卡:' + card_no + ' 绑定作业门信息').dialog("open");
+        $.ajax({
+            url: '/GATE/ACCESS_GATE_BDATA_CARD/GetGateName/' + card_no,
+            cache: false,
+            dataType: 'JSON',
+            type: 'get',
+            async: false,
+            success: function(result) {
+                $.procAjaxMsg(result, function() {
+                    $('#inperson').datagrid({ data: result.Data.Data });
+                }, function() {
+                    $('#inperson').datagrid({ data: [] });
+                    $.alertMsg(result.Msg, '操作提示', null);
+                });
+
+            }
+        });
+    }
+
+    //人为解除作业门与开门卡的绑定关系
+    function singleUnBind(pkid) {
+        if (pkid != undefined) {
+            $.ajax({
+                url: '/GATE/ACCESS_GATE_BDATA_CARD/SingelUnBind/' + pkid,
+                cache: false,
+                dataType: 'JSON',
+                type: 'get',
+                async: false,
+                success: function(result) {
+                    $.procAjaxMsg(result, function() {
+                        $('#inperson').datagrid({ data: result.Data.Data });
+                    }, function() {
+                        $('#inperson').datagrid({ data: [] });
+                        $.alertMsg(result.Msg, '操作提示', null);
+                    });
+
+                }
+            });
+        }
+    }
+    //重新发送作业门与开门卡的绑定关系
+    function singleBind(pkid) {
+        if (pkid != undefined) {
+            $.ajax({
+                url: '/GATE/ACCESS_GATE_BDATA_CARD/SingelBind/' + pkid,
+                cache: false,
+                dataType: 'JSON',
+                type: 'get',
+                async: false,
+                success: function (result) {
+                    $.procAjaxMsg(result, function () {
+                        $('#inperson').datagrid({ data: result.Data.Data });
+                    }, function () {
+                        $('#inperson').datagrid({ data: [] });
+                        $.alertMsg(result.Msg, '操作提示', null);
+                    });
+
+                }
+            });
+        }
+    }
+
+</script>
+ 
+    <div class="easyui-layout" fit="true" border="false">
+        <div region="north" border="false" style="float: left; overflow: hidden; padding: 3px;">
+            <form id="searchForm">
+                <table class="z-selectbar">
+                    <tr>
+                        <td>
+                            @*卡归属段&nbsp;
+                            <input class="easyui-combobox" data-options="valueField: 'id',textField: 'text',editable: false,data:Gate_CardSectionJson" data-bind="comboboxValue: searchForm.CARD_SECTION" style="width: 100PX"/>*@
+                            &nbsp;&nbsp;&nbsp;身份卡号
+                            <input class="easyui-textbox" style="width: 100PX" data-bind="textboxValue: searchForm.CARD_NO"/>
+                            &nbsp;&nbsp; 持卡人
+                            <input class="easyui-combotree" data-bind="combotreeSource: extE, combotreeValue: searchForm.MEMBER_ID" style="width: 240px"/>
+                            &nbsp;状态&nbsp;
+                            <input class="easyui-combobox" data-options="valueField: 'id',textField: 'text',editable: false,data:Gate_CardStateJson" data-bind="comboboxValue: searchForm.CARD_STATE" style="width: 100PX"/>
+                            <span id="s-toolbar" ></span>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <div class="z-toolbar">
+                 <span id="z-toolbar"></span>
+                 <a id="a_unbind" data-options="disabled:true" href="javascript:void(0);" plain="true" class="easyui-linkbutton" icon="icon-link_delete" title="解绑" onclick="unbindClick();">开门卡解绑</a>
+                @*<a id="a_abandon" data-options="disabled:true" href="javascript:void(0);" plain="true" class="easyui-linkbutton" icon="icon-vcard_delete" title="废弃" onclick="abandonClick();">废弃</a>*@
+                @*<a id="a_unabandon"   data-options="disabled:true"    href="javascript:void(0);" plain="true" class="easyui-linkbutton" icon="icon-vcard_add" title="解除废弃" onclick="unabandonClick();">解除废弃</a>*@
+            </div>
+        </div>
+        <div region="center" border="false" style="border-top: 1px solid #8db2e3">
+            <table id="data_grid">
+            </table>
+        </div>
+    </div>
+<div id="data_add" class="easyui-window" data-options="modal:true,closed:true,minimizable:false,maximizable:false,collapsible:false,resizable:false,title:'门卡管理'" style="width: 600px; height: 380px;">
+    <div class="easyui-layout" fit="true">
+        <form id="DataForm" method="post">
+            <div region="center" border="false" style="padding: 10px;">
+                <table class="nrgl_down_tab">
+                    <tr>
+                        <th>单位</th>
+                        <td><input id="deptcodeadd" name="deptcodetaddname" class="easyui-combotree" style="width: 300px" data-bind="combotreeSource: extB, combotreeValue: addForm.DEPT_CODE" data-options="required:true">
+                        </td>
+                    </tr>
+                    <tr ID="tr_member_id">
+                        <th>持卡人</th>
+                        <td><input name="memberid" id="memberid" class="easyui-combotree" data-bind="combotreeValue: addForm.MEMBER_ID" data-options="required:true,validType:['member']" style="width: 300px">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="80px">身份卡号</th>
+                        <td><input name="cardno" id="cardno" style="width: 300px;" class="easyui-textbox" data-options="required:true,validType:['length[8,8]']" data-bind="textboxValue: addForm.CARD_NO" maxlength="20"/>
+                            <div style="display: none"><input id="upid" name="upid" data-bind="textboxValue: addForm.PKID"/>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="80px">开门卡号</th>
+                        <td><input name="doorcardno" id="doorcardno" style="width: 300px;" class="easyui-textbox" data-options="validType:['length[8,8]']" data-bind="textboxValue: addForm.DOOR_CARD_NO" maxlength="20"/>
+                        </td>
+                    </tr>
+                    <tr >
+                        <th>作业门</th>
+                        <td><input name="gateno" id="gateno" class="easyui-combotree" data-options="onlyLeafCheck:true,multiple: true,editable: false,cascadeCheck: false" validType="gatenocheck['#gateno']" style="width: 300px">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>备注</th>
+                        <td style="height: 70px;">
+                            <input name="note" type="text" style="width: 300px; height: 60px;" multiline="true" class="easyui-textbox" data-bind="textboxValue: addForm.CARD_NOTE" maxlength="200" data-options="validType:['length[0,200]']" aria-multiline="True"/>
+                        </td>
+                    </tr>
+                </table>
+                <span style="color: red">
+                    注:1、选择单位后，级联出持卡人和作业门相关信息；<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;2、身份卡号必填，开门卡号选填；
+                </span>
+            </div>
+            <div id="v-toolbar" data-options="region:'south',border:false" style="text-align: right; height: 35px; padding: 4px; padding-right: 10px; border-top: 1px solid #ccc;"></div>
+        </form>
+    </div>
+</div>
+
+<div id="mygate" class="easyui-window" data-options="modal:false,closed:true,minimizable:false,maximizable:true,collapsible:false,resizable:false" style="width: 800px; height: 400px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center',border:false" style="padding: 5px;">
+            <table id="inperson"></table>
+        </div>
+    </div>
+</div>
+   
+ 

@@ -1,0 +1,396 @@
+﻿@{
+    ViewBag.Title = "在线申请";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    var jsonModel = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+}
+
+<script type="text/javascript">
+
+    var initModel;
+    function loadInit() {
+        initModel = JSON.parse('@jsonModel');
+        if (initModel.SID != null && initModel.SID != "") {
+            getFiles(initModel.SID);
+            $("#SID").val(initModel.SID);
+            $("#APPLY_NUMBER").val(initModel.APPLY_NUMBER);
+            $("#CORP_NAME").val(initModel.CORP_NAME);
+            $("#SOCIAL_CREDIT_CODE").val(initModel.SOCIAL_CREDIT_CODE);
+            $("#REGISTERED_ADDRESS").val(initModel.REGISTERED_ADDRESS);
+            $("#LEGAL_PERSON").val(initModel.LEGAL_PERSON);
+            $("#LEGAL_PERSON_PHONE").val(initModel.LEGAL_PERSON_PHONE);
+            $("#OPERATOR").val(initModel.OPERATOR);
+            $("#OPERATOR_PHONE").val(initModel.OPERATOR_PHONE);
+            $("#OPERATOR_ID_NO").val(initModel.OPERATOR_ID_NO);
+            $("#EMIAL").val(initModel.EMIAL);
+            $("#REGISTERED_CAPITAL").val(initModel.REGISTERED_CAPITAL);
+            $("#APPLY_MONEY_WORDS").val(initModel.APPLY_MONEY_WORDS);
+            $("#APPLY_MONEY_NUMBER").val(initModel.APPLY_MONEY_NUMBER);
+            $("#APPLY_ITEM_TYPE").html(initModel.APPLY_ITEM_TYPE);
+            $("#REJECT_REASON").html(initModel.REJECT_REASON);
+            if (initModel.REJECT_REASON != null && initModel.REJECT_REASON != "") {
+                $("#bhyy").css('display', '');
+            }
+        }
+    }
+    function loadForm(form) {
+        form.on('checkbox(ISAGREE)', function (data) {
+            if (data.elem.checked) {
+                $("#loginBut").removeClass("layui-btn-disabled");
+            }
+            else {
+                $("#loginBut").addClass("layui-btn-disabled");
+            };
+        });
+        form.on('select(ITEM_TYPE)', function (data) {
+            getItemName(data.value, form)
+        });
+        $.ajax({
+            url: '/COMPANY/Apply/ProjectType',
+            type: "GET",
+            dataType: "JSON",
+            success: function succCallback(result, textStatus) {//回调成功,
+                if (result.Statu == "1") {
+                    $(result.Data).each(
+                    function (index) {
+                        $("#ITEM_TYPE").append("<option value='" + result.Data[index] + "'>" + result.Data[index] + "</option>");
+                    });
+                }
+                if (initModel.APPLY_ITEM_TYPE != null && initModel.APPLY_ITEM_TYPE != "") {
+                    $("#ITEM_TYPE").val(initModel.APPLY_ITEM_TYPE);
+                    getItemName(initModel.APPLY_ITEM_TYPE, form);
+                }
+                form.render('select');
+                //form.render('select', 'ITEM_NAME'); //更新 lay-filter="ITEM_NAME" 所在容器内的全部 select 状态
+            }
+        });
+    }
+
+    function getItemName(itemcode, form) {
+        $.ajax({
+            url: '/COMPANY/Apply/ProjectInfo/' + itemcode,
+            type: "GET",
+            dataType: "JSON",
+            success: function succCallback(result, textStatus) {//回调成功,
+                $("#APPLY_ITEM_TYPE").html(itemcode);
+                $("#ITEM_NAME").empty();
+                $("#ITEM_NAME").append("<option value=''></option>");
+                if (result.Statu == "1") {
+                    $(result.Data).each(
+                    function (index) {
+                        $("#ITEM_NAME").append("<option value='" + result.Data[index].id + result.Data[index].text + "'>" + result.Data[index].text + "</option>");
+                    });
+                }
+                if (initModel.APPLY_ITEM_NAME != null && initModel.APPLY_ITEM_NAME != "") {
+                    $("#ITEM_NAME").val(initModel.APPLY_ITEM_NAME);
+                    initModel.APPLY_ITEM_NAME = "";
+                }
+                form.render('select');
+                //form.render('select', 'ITEM_NAME'); //更新 lay-filter="ITEM_NAME" 所在容器内的全部 select 状态
+            }
+        });
+    }
+
+    
+    function getFiles(main_sid) {
+        $.ajax({
+            url: '/api/COMPANY/Apply/FileList',
+            type: "POST",
+            data: { "MAIN_SID": main_sid },
+            dataType: "JSON",
+            success: function succCallback(result, textStatus) {//回调成功,
+                if (result.Statu == "1") {
+                    $(result.Data).each(
+                    function (index) {
+
+                        var tr = '<tr id="upload-' + index + '" style="height:25px;">'
+                            + '<td style="padding:5px;"><input type="text" name="FILE_NAME" value="' + result.Data[index].DOCUMENT_NAME + '" placeholder="请输入文件名称" autocomplete="off" class="layui-input" style="height:28px;"></td>'
+                            + '<td style="padding:5px;"><input type="text" name="FILE_CODE" value="' + result.Data[index].PATENT_NUMBER + '" placeholder="请输入文件编码" autocomplete="off" class="layui-input" style="height:28px;"></td>'
+                            + '<td style="text-align:center;display:none"><input type="text" name="FILE_PATH" value="' + result.Data[index].FILE_PATH + '"/></td>'
+                            + '<td style="padding:0px;text-align:center;">'
+                            + '<button class="layui-btn layui-btn-xs" onclick="showImg(\'' + result.Data[index].FILE_PATH + '\')">预览</button><button class="layui-btn layui-btn-xs layui-btn-danger" onclick="deletetr(\'' + index + '\')">删除</button>'
+                            + '</td>'
+                            + '</tr>';
+
+                        $("#uploadList").append(tr);
+                        var csslineHeight = $("#uplable").css('line-height').replace("px", "");
+                        var lineHeight = parseFloat(csslineHeight);
+                        $("#uplable").css("height", (lineHeight + 39) + "px");
+                        $("#uplable").css('line-height', (lineHeight + 39) + "px");
+
+                    });
+                }
+            }
+        });
+    }
+    function loadUpload(upload) {
+
+        upload.render({
+            elem: '#uploadAction',
+            accept:'images',
+            ext: 'jpg|jpeg',
+            size: 2048,
+            before: function (obj) {
+                layer.load(); //上传loading
+            },
+            error: function (index, upload) {
+                layer.closeAll('loading'); //关闭loading
+            },
+            done: function (result, index, upload) {
+                layer.closeAll('loading'); //关闭loading
+                if (!result.Statu) { return; }
+                if (result.Statu == "1") {
+                    var tr = '<tr id="upload-' + index + '" style="height:25px;">'
+                        + '<td style="padding:5px;"><input type="text" name="FILE_NAME" placeholder="请输入文件名称" autocomplete="off" class="layui-input" style="height:28px;"></td>'
+                        + '<td style="padding:5px;"><input type="text" name="FILE_CODE" placeholder="请输入文件编码" autocomplete="off" class="layui-input" style="height:28px;"></td>'
+                        + '<td style="text-align:center;display:none"><input type="text" name="FILE_PATH" value="' + result.Data + '"/></td>'
+                        + '<td style="padding:0px;text-align:center;">'
+                        + '<button class="layui-btn layui-btn-xs" onclick="showImg(\'' + result.Data + '\')">预览</button><button class="layui-btn layui-btn-xs layui-btn-danger" onclick="deletetr(\'' + index + '\')">删除</button>'
+                        + '</td>'
+                        + '</tr>';
+                    $("#uploadList").append(tr);
+                    var csslineHeight = $("#uplable").css('line-height').replace("px", "");
+                    var lineHeight = parseFloat(csslineHeight);
+                    $("#uplable").css("height", (lineHeight + 39) + "px");
+                    $("#uplable").css('line-height', (lineHeight + 39) + "px");
+                    layer.alert(result.Msg, { title: '上传成功', icon: 1 });
+                } else {
+                    layer.msg(result.Msg, { title: '上传失败', icon: 2 });
+                }
+            }
+        })
+    }
+    function saveSubmit(data) {
+        var filename = "";
+        var filecode = "";
+        var filepath = "";
+
+        var flag = true;
+        
+        $("input[name=FILE_NAME]").each(function (a, b) {
+            if ($(b).val() == "") {//判断值
+                layer.alert("请输入文件名称", { title: '提示', icon: 2 });
+                flag = false;
+            } else {
+                filename += $(b).val() + "|";
+            }
+        });
+        if (flag) {
+            $("input[name=FILE_CODE]").each(function (a, b) {
+                if ($(b).val() == "") {//判断值
+                    layer.alert("请输入文件编号", { title: '提示', icon: 2 });
+                    flag = false;
+                } else {
+                    filecode += $(b).val() + "|";
+                }
+            });
+            $("input[name=FILE_PATH]").each(function (a, b) {
+                filepath += $(b).val() + "|";
+            });
+
+            data["FILENAME"] = filename;
+            data["FILECODE"] = filecode;
+            data["FILEPATH"] = filepath;
+        }
+        if (flag) {
+
+            if (filepath != "") {
+
+                $.ajax({
+                    url: '/api/COMPANY/Apply/CompanyApply',
+                    contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+                    data: data,
+                    type: "POST",
+                    dataType: "JSON",
+                    beforeSend: function () {
+                        $("#loginBut").addClass("layui-btn-disabled");
+                    },
+                    success: function succCallback(result, textStatus) {//回调成功,
+                        if (!result.Statu) { return; }
+                        if (result.Statu == "1") {
+                            layer.alert(result.Msg, {
+                                title: '申请提交成功',
+                                icon: 1,
+                                closeBtn: 0
+                            }, function () {
+                                window.location.href = "/COMPANY/Apply/Bjcx";
+                            });
+
+
+                        } else {
+                            layer.alert(result.Msg, { title: '申请失败', icon: 0 });
+                        }
+                    },
+                    complete: function () {
+                        $("#loginBut").removeClass("layui-btn-disabled");
+                    }
+                }).fail(
+                function (xhr, textStatus, err) {
+                    $("#loginBut").removeClass("layui-btn-disabled");
+                    layer.alert('申请失败，原因如下: ' + xhr.responseJSON.ExceptionMessage, { title: '申请失败', icon: 0 });
+                });
+            } else {
+                layer.alert('请上传申请资料!', { title: '注册提示', icon: 0 });
+            }
+        }
+    }
+    function deletetr(index) {
+        $('#upload-' + index).remove();
+        var csslineHeight = $("#uplable").css('line-height').replace("px", "");
+        var lineHeight = parseFloat(csslineHeight);
+        $("#uplable").css("height", (lineHeight - 39) + "px");
+        $("#uplable").css('line-height', (lineHeight - 39) + "px");
+    }
+    function showImg(imgpath) {
+        layer.open({
+            type: 2,
+            title: "证件预览",
+            shadeClose: true,
+            shade: 0.5,
+            maxmin: true,
+            area: ['860px', '570px'],
+            content: "/Content/ZoomPic/index.html?pic=" + imgpath
+        });
+    }
+</script>
+<style>
+    .layui-form-item {
+    margin-bottom: 8px;
+    clear: both;}
+</style>
+<div class="box_t">
+    <div class="box-ttt"><span>在线申请</span></div>
+</div>
+<div class="layui-form layui-form-pane">
+
+    <div class="layui-form-item" id="bhyy" style="display:none;">
+        <label class="layui-form-label" style="width:130px;vertical-align:middle;padding:0px;line-height:38px;height:40px;">驳回原因</label>
+        <div class="layui-input-inline" style="width: 630px;margin-right:0px;">
+            <table class="layui-table" style="margin:0px;">
+                <tr>
+                    <th id="REJECT_REASON" style="color:#ff0000;">
+                    </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">申请项目</label>
+        <div class="layui-input-inline" style="width: 130px;">
+            <select name="APPLY_ITEM_TYPE" id="ITEM_TYPE" required lay-verify="required" lay-filter="ITEM_TYPE">
+                <option value=""></option>
+            </select>
+        </div>
+        <div style="float:left; width: 490px;">
+            <select name="APPLY_ITEM_NAME" id="ITEM_NAME" required lay-verify="required" lay-filter="ITEM_NAME"></select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">企业名称</label>
+        <div class="layui-input-inline" style="width: 630px;margin-right:0px;">
+            <input type="text" name="CORP_NAME" id="CORP_NAME" required lay-verify="required"  placeholder="以工商营业执照为准" autocomplete="off" class="layui-input">
+        </div>
+        @*<div class="layui-form-mid layui-word-aux">请务必填写企业名称</div>*@
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">统一社会信用代码</label>
+        <div class="layui-input-inline" style="width: 630px;margin-right:0px;">
+            <input type="text" name="SOCIAL_CREDIT_CODE" id="SOCIAL_CREDIT_CODE" required lay-verify="required"  placeholder="以工商营业执照为准" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"  style="width:130px;">企业注册地址</label>
+        <div class="layui-input-inline" style="width: 630px;margin-right:0px;">
+            <input type="text" name="REGISTERED_ADDRESS" id="REGISTERED_ADDRESS" required lay-verify="required"  placeholder="以工商营业执照为准" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">法定代表人</label>
+        <div class="layui-input-inline" style="width: 230px;">
+            <input type="text" name="LEGAL_PERSON" id="LEGAL_PERSON" required lay-verify="required"  placeholder="以工商营业执照为准" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label">联系电话</label>
+        <div class="layui-input-inline" style="width: 280px;margin-right:0px;">
+            <input type="text" name="LEGAL_PERSON_PHONE" id="LEGAL_PERSON_PHONE" required lay-verify="required|phone"  placeholder="法定代表人联系电话" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">经办人</label>
+        <div class="layui-input-inline" style="width: 230px;">
+            <input type="text" name="OPERATOR" id="OPERATOR" required lay-verify="required"  placeholder="法人委托办理政策兑现事项申请的代理人" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label">联系电话</label>
+        <div class="layui-input-inline" style="width: 280px;margin-right:0px;">
+            <input type="text" name="OPERATOR_PHONE" id="OPERATOR_PHONE" required lay-verify="required|phone"  placeholder="代理人联系电话" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">经办人证件号码</label>
+        <div class="layui-input-inline" style="width: 230px;">
+            <input type="text" name="OPERATOR_ID_NO" id="OPERATOR_ID_NO" required lay-verify="required|identity"  placeholder="代理人身份证号码" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label">邮    箱</label>
+        <div class="layui-input-inline" style="width: 280px;margin-right:0px;">
+            <input type="text" name="EMIAL" id="EMIAL" required lay-verify="required|email"  placeholder="联系企业办理政策兑现有关事宜时使用" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">注册资本</label>
+        <div class="layui-input-inline" style="width: 630px;margin-right:0px;">
+            <input type="text" name="REGISTERED_CAPITAL" id="REGISTERED_CAPITAL" required lay-verify="required"  placeholder="以工商营业执照为准" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;">申请金额(万元)</label>
+        <div class="layui-input-inline" style="width: 330px;">
+            <input type="text" name="APPLY_MONEY_WORDS" id="APPLY_MONEY_WORDS" required lay-verify="required"  placeholder="大写金额" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label">小写金额</label>
+        <div class="layui-input-inline" style="width: 180px;margin-right:0px;">
+            <input type="text" name="APPLY_MONEY_NUMBER" id="APPLY_MONEY_NUMBER" required lay-verify="required"  placeholder="小写金额" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;vertical-align:middle;padding:0px;line-height:38px;height:38px;" id="uplable"><button class="layui-btn  layui-btn-sm layui-btn-normal" style="width:100px;margin:0px;" id="uploadAction" lay-data="{url: '/Users/UploadSingleFile', accept: 'images',size:2048}">上传印证材料</button></label>
+        <div class="layui-input-inline" style="width: 630px;margin-right:0px;">
+            <table class="layui-table" style="margin:0px;">
+                <thead>
+                    <tr>
+                        <th style="width: 250px;height:36px;padding:0px;text-align:center;">材料名称</th>
+                        <th style="width: 250px;height:36px;padding:0px;text-align:center;">材料编号</th>
+                        <th style="text-align:center;display:none">材料</th>
+                        <th style="text-align:center;height:36px;padding:0px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="uploadList"></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:130px;height:140px;vertical-align:middle;line-height:110px;">企业承诺</label>
+        <div class="layui-input-inline" style="width: 630px;margin-right:0px;">
+            <table class="layui-table" style="margin:0px;height:140px;">
+                    <tr>
+                        <th>
+                    1.本企业郑重承诺《山西转型综合改革示范区政策兑现事项申请表(<span id="APPLY_ITEM_TYPE"></span>)》中所填报的信息及所提供的材料均真实、准确、有效，对所提供材料，依法承担法律责任。
+                    <br />
+                    2.本企业郑重承诺收到的奖励金额将按照国家有关财务会计制度及时做好账务处理，如果产生任何经济和法律责任均由本公司承担。
+                    <br />
+                    3.本企业郑重承诺上年度未受到环保、安监部门的行政处罚，未被工商部门列入经营异常名录，且并无不良信用记录和违规营业行为。
+                     </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-inline" style="width: 620px;padding-left:130px;">
+            <input type="checkbox"  title="我已阅读并同意上述承诺" lay-skin="primary" lay-filter="ISAGREE">
+        </div>
+     </div>
+     <div class="layui-form-item" style="padding-left:130px;">
+            <input type="hidden" name="SID" id="SID" /><input type="hidden" name="APPLY_NUMBER" id="APPLY_NUMBER" />
+            <button id="loginBut" class="layui-btn layui-btn-normal layui-btn-disabled" lay-submit lay-filter="loginBut"> 提 交 </button>
+        </div>
+    </div>
+

@@ -1,0 +1,78 @@
+﻿<#@ template language="C#" hostspecific="True"#> 
+<#@include file="Manager.ttinclude"#>  
+<#+
+	private  void Create(string[] dllurls) {
+		Manager manager = Manager.Create(Host, GenerationEnvironment);
+#>  
+<#=Createx(dllurls) #>  
+<#+
+    }
+	private string Createx(string[] dllurls) {
+		string solutionDir = Host.ResolveAssemblyReference("$(SolutionDir)");
+		string str ="using System;\n";
+		str +="using System.Collections.Generic;\n";
+		str +="using System.Linq;\n";
+		str +="using System.Text;\n"; 
+		str +="using SolutionWeb.Common;\n"; 
+		str +="using SolutionWeb.Interface;\n"; 
+		str +="using Microsoft.Practices.Unity;\n"; 
+		str +="using System.Runtime.Remoting.Messaging;\n"; 
+		str +="namespace SolutionWeb.User.Models\n";
+		str +="{\n";
+		foreach(string dllurl in dllurls)
+		{
+		    byte[] fileData = File.ReadAllBytes(Path.Combine(solutionDir, dllurl));
+            Assembly assembly = Assembly.Load(fileData);
+			foreach(Type entity in assembly.ExportedTypes)
+			{
+		        if(!entity.Name.Contains("Entities") && !entity.Name.StartsWith("VIEW") && !entity.Name.StartsWith("POCO")&& !entity.FullName.Contains("+") && !entity.Name.EndsWith("Model"))
+				{
+					//foreach (PropertyInfo entity in context.GetType().GetProperties(BindingFlags.Public|BindingFlags.Instance|BindingFlags.DeclaredOnly))
+					//{
+				
+						str +="\tpublic partial class Model_"+entity.Name+"\n";
+						str +="\t{ \n";
+							str +="\t\t#region 操作上下文的静态变量\n";
+							str +="\t\tstatic OperContext oc = OperContext.CurrentContext;\n";
+							str +="\t\t#endregion\n";
+								str +="\t\t#region Ioc\n";
+								str +="\t\tprivate IBaseService bs { set; get; }\n";
+								str +="\t\tpublic Model_"+entity.Name+"()\n";
+								str +="\t\t{\n";
+								str +="\t\t\tbs = uc.Resolve<IBaseService>();\n";
+								str +="\t\t}\n";
+								str +="\t\tprivate IUnityContainer uc\n";
+								str +="\t\t{\n";
+									str +="\t\t\tget\n";
+									str +="\t\t\t{\n";
+										str +="\t\t\t\treturn DIFactory.GetContainer();\n";
+									str +="\t\t\t}\n";
+								str +="\t\t}\n";
+								str +="\t\t#endregion\n";
+								
+							str +="\t\t#region 实例化\n";
+							str +="\t\tpublic static Model_"+entity.Name+" Create\n";
+							str +="\t\t{\n";
+								str +="\t\t\tget\n";
+								str +="\t\t\t{\n";
+									str +="\t\t\t\tModel_"+entity.Name+" opContext = CallContext.LogicalGetData(typeof(Model_"+entity.Name+").Name) as Model_"+entity.Name+";\n";
+									str +="\t\t\t\tif (opContext == null)\n";
+									str +="\t\t\t\t{\n";
+										str +="\t\t\t\t\topContext = new Model_"+entity.Name+"();\n";
+										str +="\t\t\t\t\tCallContext.LogicalSetData(typeof(Model_"+entity.Name+").Name, opContext);\n";
+
+									str +="\t\t\t}\n";
+									str +="\t\t\treturn opContext;\n";
+								str +="\t\t\t}\n";
+							str +="\t\t} \n";
+							str +="\t\t#endregion\n";
+						str +="\t}\n";
+
+					//}
+				}
+			}
+		}
+		str +="}";
+		return str;
+	}
+#>

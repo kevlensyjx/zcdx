@@ -1,0 +1,52 @@
+﻿@{
+    ViewBag.Title = "参数设置";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    function loadExt(viewModel, funcName) {
+        if (funcName == "afterLoad") {
+           
+            loadGrid(viewModel.urls.list());
+           
+        }
+    }
+    function loadGrid(listurl) {
+        $('#data_grid').datagrid({
+            url: listurl,
+            pagination: true,
+            pageSize: 20,
+            pageList: [10, 20, 30, 40, 50],
+            fit: true,
+            fitColumns: true,
+            nowrap: false,
+            rownumbers: true,
+            singleSelect: true,
+            border: 0,
+            idField: 'SID',
+            columns: [[
+                { title: '配置名称', field: 'CONFIG_NAME', width: 100, align: 'center' },
+                { title: '配置关键字', field: 'CONFIG_TYPE', width: 50, align: 'center' },
+                { title: '配置值', field: 'CONFIG_VALUE', width: 50, align: 'center' },
+                { title: '配置备注', field: 'CONFIG_REMARK', width: 380, halign: 'center', align: 'left' }
+            ]]
+        });
+
+    }
+ 
+
+</script>
+
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'north',border:false" style="float: left; overflow: hidden; padding: 3px;">
+        
+        <div id="z-toolbar" class="z-toolbar"></div>
+    </div>
+
+    <div data-options="region:'center',border:false" style="border-top: 1px solid #8db2e3">
+        <table id="data_grid"></table>
+    </div>
+</div>
+ 
+
+
+

@@ -1,0 +1,126 @@
+﻿@{
+    var jsonModel = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>复制文档</title>
+    @Scripts.Render("~/jquery-easyui/js")
+    @Styles.Render("~/jquery-easyui/css")
+
+    @Scripts.Render("~/Content/js")
+    @Styles.Render("~/Content/css")
+    <script type="text/javascript">
+        $(function () {
+            document.oncontextmenu = function (e) {return false; }
+            var initModel = @jsonModel;
+            $('#areasFile').combobox({
+                data: initModel.extForm.extA,
+                valueField: 'id',
+                textField: 'text',
+                editable: false
+            });
+            $('#dllFile').combobox({
+                data: initModel.extForm.extB,
+                valueField: 'id',
+                textField: 'text',
+                editable: false
+            });
+            var areasFileValue = localStorage.getItem("areasFileValue");
+            if (areasFileValue != null && areasFileValue != "") {
+                $('#areasFile').combobox('setValue',areasFileValue);
+            }
+            var dllFileValue = localStorage.getItem("dllFileValue");
+            if (dllFileValue != null && dllFileValue != "") {
+                $('#dllFile').combobox('setValue',dllFileValue);
+            }
+            $('#areasBut').linkbutton({
+                iconCls: 'icon-page_copy',
+                onClick:function(){
+                    var areasFile=  $('#areasFile').combobox('getValue');
+                    $.messager.confirm('请确认', '您确定要复制文件吗？', function (b) {
+                        if (b) {
+                            $.ajax({
+                                url: '/Copy/CopyToArea/'+areasFile,
+                                cache: false,
+                                type: 'GET',
+                                beforeSend: function () {
+                                    localStorage.setItem("areasFileValue", areasFile);
+                                    $('#areasBut').linkbutton('disable');
+                                    $('#areasBut').linkbutton({iconCls: 'icon-page_copy',text: "复制中.."});
+                                },
+                                success: function(result, textStatus){
+                                    $.alertMsg( result, '操作提示', null);
+                                },
+                                complete: function () {
+                                    $('#areasBut').linkbutton('enable');
+                                    $('#areasBut').linkbutton({iconCls: 'icon-page_copy',text: "复制Htmls文件"});
+                                }
+                            }).fail(
+                            function (xhr, textStatus, err) {
+                                $.alertMsg('复制失败，原因如下: ' + xhr.responseJSON.ExceptionMessage, '操作提示', null);
+                            });
+                        }
+                    });
+                }
+            });
+            $('#dllBut').linkbutton({
+                iconCls: 'icon-page_copy',
+                onClick:function(){
+                    var dllFile=  $('#dllFile').combobox('getValue');
+
+                    $.messager.confirm('请确认', '您确定要复制文件吗？', function (b) {
+                        if (b) {
+                            $.ajax({
+                                url: '/Copy/CopyToDll/'+dllFile,
+                                cache: false,
+                                type: 'GET',
+                                beforeSend: function () {
+                                    localStorage.setItem("dllFileValue", dllFile);
+                                    $('#dllBut').linkbutton('disable');
+                                    $('#dllBut').linkbutton({iconCls: 'icon-page_copy',text: "复制中.."});
+                                },
+                                success: function(result, textStatus){
+                                    $.alertMsg( result, '操作提示', null);
+                                },
+                                complete: function () {
+                                    $('#dllBut').linkbutton('enable');
+                                    $('#dllBut').linkbutton({iconCls: 'icon-page_copy',text: "复制Model文件"});
+                                }
+                            }).fail(
+                            function (xhr, textStatus, err) {
+                                $.alertMsg('复制失败，原因如下: ' + xhr.responseJSON.ExceptionMessage, '操作提示', null);
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="easyui-layout" data-options="fit:true,border:false">
+
+        <div data-options="region:'center',border:false" style="border-top: 1px solid #8db2e3">
+            <table class="z-selectbar">
+                <tr>
+                    <td>
+                        <br /><br />
+                        &nbsp;Htmls文件:&nbsp;<input id="areasFile" name="areasFile" style="width:300px;">
+                        &nbsp;&nbsp;&nbsp;&nbsp;<a id="areasBut" href="#">复制Htmls文件</a>
+                        <br /><br />
+                        &nbsp;Model文件:&nbsp;<input id="dllFile" name="dllFile" style="width:300px;">
+                        &nbsp;&nbsp;&nbsp;&nbsp;<a id="dllBut" href="#">复制Model文件</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

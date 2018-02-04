@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = "企业首页";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+    <script>
+        $(function () {
+            $('#upload').click(function () {
+                window.location = '/COMPANY/Test/Index'
+            });
+    });
+    </script>
+
+    当前用户名:@ViewBag.CompanyName
+    <button class="layui-btn layui-btn-sm layui-btn-normal" id="upload">上传测试页</button>
+

@@ -1,0 +1,2118 @@
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('BASE_PROJECT_CONFIG') and o.name = 'FK_BASE_PRO_REFERENCE_BASE_PRO')
+alter table BASE_PROJECT_CONFIG
+   drop constraint FK_BASE_PRO_REFERENCE_BASE_PRO
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('POLICY_MAIN_INFO_DETAIL') and o.name = 'FK_POLICY_M_RE_POLICY_M')
+alter table POLICY_MAIN_INFO_DETAIL
+   drop constraint FK_POLICY_M_RE_POLICY_M
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('POLICY_STATUS_CHANGE') and o.name = 'FK_POLICY_S_REFERENCE_POLICY_M')
+alter table POLICY_STATUS_CHANGE
+   drop constraint FK_POLICY_S_REFERENCE_POLICY_M
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('SYS_ROLE_MENUOPT_MAP') and o.name = 'SYS_ROLE_MENUOPT_MAP_FK_MENOPT')
+alter table SYS_ROLE_MENUOPT_MAP
+   drop constraint SYS_ROLE_MENUOPT_MAP_FK_MENOPT
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('SYS_ROLE_MENUOPT_MAP') and o.name = 'SYS_ROLE_MENUOPT_MAP_FK_ROLE')
+alter table SYS_ROLE_MENUOPT_MAP
+   drop constraint SYS_ROLE_MENUOPT_MAP_FK_ROLE
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('SYS_ROLE_MENU_MAP') and o.name = 'SYS_ROLE_MENU_MAP_FK_MENU')
+alter table SYS_ROLE_MENU_MAP
+   drop constraint SYS_ROLE_MENU_MAP_FK_MENU
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('SYS_ROLE_MENU_MAP') and o.name = 'SYS_ROLE_MENU_MAP_FK_ROLE')
+alter table SYS_ROLE_MENU_MAP
+   drop constraint SYS_ROLE_MENU_MAP_FK_ROLE
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('SYS_USER') and o.name = 'SYS_USER_FK_ID')
+alter table SYS_USER
+   drop constraint SYS_USER_FK_ID
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('SYS_USER_DEFAULTMENU') and o.name = 'USER_DEFAULT_MENU_FKID')
+alter table SYS_USER_DEFAULTMENU
+   drop constraint USER_DEFAULT_MENU_FKID
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('SYS_USER_DEFAULTMENU') and o.name = 'USER_DEFAULT_UESER_FKID')
+alter table SYS_USER_DEFAULTMENU
+   drop constraint USER_DEFAULT_UESER_FKID
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('SYS_USER_ROLE_MAP') and o.name = 'SYS_USER_ROLE_MAP_FK_ROLE')
+alter table SYS_USER_ROLE_MAP
+   drop constraint SYS_USER_ROLE_MAP_FK_ROLE
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('SYS_USER_ROLE_MAP') and o.name = 'SYS_USER_ROLE_MAP_FK_USER')
+alter table SYS_USER_ROLE_MAP
+   drop constraint SYS_USER_ROLE_MAP_FK_USER
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('BASE_PROJECT_CONFIG')
+            and   type = 'U')
+   drop table BASE_PROJECT_CONFIG
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('BASE_PROJECT_INFO')
+            and   type = 'U')
+   drop table BASE_PROJECT_INFO
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('BASE_STATUS_DIC')
+            and   type = 'U')
+   drop table BASE_STATUS_DIC
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('BASE_WORKFLOW_INFO')
+            and   type = 'U')
+   drop table BASE_WORKFLOW_INFO
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('CORPORATION_BASE_INFO')
+            and   type = 'U')
+   drop table CORPORATION_BASE_INFO
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('POLICY_MAIN_INFO')
+            and   type = 'U')
+   drop table POLICY_MAIN_INFO
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('POLICY_MAIN_INFO_DETAIL')
+            and   type = 'U')
+   drop table POLICY_MAIN_INFO_DETAIL
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('POLICY_STATUS_CHANGE')
+            and   type = 'U')
+   drop table POLICY_STATUS_CHANGE
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('SYS_DEPT')
+            and   type = 'U')
+   drop table SYS_DEPT
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('SYS_MENU')
+            and   type = 'U')
+   drop table SYS_MENU
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('SYS_MENUOPT')
+            and   type = 'U')
+   drop table SYS_MENUOPT
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('SYS_ROLE')
+            and   type = 'U')
+   drop table SYS_ROLE
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('SYS_ROLE_MENUOPT_MAP')
+            and   type = 'U')
+   drop table SYS_ROLE_MENUOPT_MAP
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('SYS_ROLE_MENU_MAP')
+            and   type = 'U')
+   drop table SYS_ROLE_MENU_MAP
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('SYS_USER')
+            and   type = 'U')
+   drop table SYS_USER
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('SYS_USER_DEFAULTMENU')
+            and   type = 'U')
+   drop table SYS_USER_DEFAULTMENU
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('SYS_USER_ROLE_MAP')
+            and   type = 'U')
+   drop table SYS_USER_ROLE_MAP
+go
+
+/*==============================================================*/
+/* Table: BASE_PROJECT_CONFIG                                   */
+/*==============================================================*/
+create table BASE_PROJECT_CONFIG (
+   SID                  nvarchar(50)         collate Chinese_PRC_CI_AS not null,
+   PROJECT_SID          nvarchar(50)         null,
+   DEPT_TYPE            nvarchar(50)         null,
+   DEPT_CODE            nvarchar(50)         null,
+   DEPT_NAME            nvarchar(100)        null,
+   constraint PK_BASE_PROJECT_CONFIG primary key (SID)
+)
+go
+
+if exists (select 1 from  sys.extended_properties
+           where major_id = object_id('BASE_PROJECT_CONFIG') and minor_id = 0)
+begin 
+   declare @CurrentUser sysname 
+select @CurrentUser = user_name() 
+execute sp_dropextendedproperty 'MS_Description',  
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_CONFIG' 
+ 
+end 
+
+
+select @CurrentUser = user_name() 
+execute sp_addextendedproperty 'MS_Description',  
+   '政策项目基础数据表', 
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_CONFIG'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_PROJECT_CONFIG')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'PROJECT_SID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_CONFIG', 'column', 'PROJECT_SID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '项目SID',
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_CONFIG', 'column', 'PROJECT_SID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_PROJECT_CONFIG')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'DEPT_TYPE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_CONFIG', 'column', 'DEPT_TYPE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '部门类型；牵头部门/会审部门',
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_CONFIG', 'column', 'DEPT_TYPE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_PROJECT_CONFIG')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'DEPT_CODE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_CONFIG', 'column', 'DEPT_CODE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '部门编码',
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_CONFIG', 'column', 'DEPT_CODE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_PROJECT_CONFIG')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'DEPT_NAME')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_CONFIG', 'column', 'DEPT_NAME'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '部门名称',
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_CONFIG', 'column', 'DEPT_NAME'
+go
+
+/*==============================================================*/
+/* Table: BASE_PROJECT_INFO                                     */
+/*==============================================================*/
+create table BASE_PROJECT_INFO (
+   SID                  nvarchar(50)         collate Chinese_PRC_CI_AS not null,
+   ITEM_TYPE            nvarchar(50)         null,
+   ITEM_NAME            nvarchar(200)        null,
+   CASHING_WAY          nvarchar(50)         null,
+   LAY_ORDER            int                  null,
+   constraint PK_BASE_PROJECT_INFO primary key (SID)
+)
+go
+
+if exists (select 1 from  sys.extended_properties
+           where major_id = object_id('BASE_PROJECT_INFO') and minor_id = 0)
+begin 
+   declare @CurrentUser sysname 
+select @CurrentUser = user_name() 
+execute sp_dropextendedproperty 'MS_Description',  
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_INFO' 
+ 
+end 
+
+
+select @CurrentUser = user_name() 
+execute sp_addextendedproperty 'MS_Description',  
+   '政策项目基础数据表', 
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_INFO'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_PROJECT_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'ITEM_TYPE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_INFO', 'column', 'ITEM_TYPE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '项目类别',
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_INFO', 'column', 'ITEM_TYPE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_PROJECT_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'ITEM_NAME')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_INFO', 'column', 'ITEM_NAME'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '项目名称',
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_INFO', 'column', 'ITEM_NAME'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_PROJECT_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'CASHING_WAY')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_INFO', 'column', 'CASHING_WAY'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '兑现方式',
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_INFO', 'column', 'CASHING_WAY'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_PROJECT_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'LAY_ORDER')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_INFO', 'column', 'LAY_ORDER'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '排序码',
+   'user', @CurrentUser, 'table', 'BASE_PROJECT_INFO', 'column', 'LAY_ORDER'
+go
+
+/*==============================================================*/
+/* Table: BASE_STATUS_DIC                                       */
+/*==============================================================*/
+create table BASE_STATUS_DIC (
+   SID                  nvarchar(50)         not null,
+   S_CODE               nvarchar(50)         null,
+   S_NAME               nvarchar(50)         null,
+   NOTE                 nvarchar(500)        null,
+   constraint PK_BASE_STATUS_DIC primary key (SID)
+)
+go
+
+if exists (select 1 from  sys.extended_properties
+           where major_id = object_id('BASE_STATUS_DIC') and minor_id = 0)
+begin 
+   declare @CurrentUser sysname 
+select @CurrentUser = user_name() 
+execute sp_dropextendedproperty 'MS_Description',  
+   'user', @CurrentUser, 'table', 'BASE_STATUS_DIC' 
+ 
+end 
+
+
+select @CurrentUser = user_name() 
+execute sp_addextendedproperty 'MS_Description',  
+   '辅助表', 
+   'user', @CurrentUser, 'table', 'BASE_STATUS_DIC'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_STATUS_DIC')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'S_CODE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_STATUS_DIC', 'column', 'S_CODE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '状态编码',
+   'user', @CurrentUser, 'table', 'BASE_STATUS_DIC', 'column', 'S_CODE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_STATUS_DIC')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'S_NAME')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_STATUS_DIC', 'column', 'S_NAME'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '状态名称',
+   'user', @CurrentUser, 'table', 'BASE_STATUS_DIC', 'column', 'S_NAME'
+go
+
+/*==============================================================*/
+/* Table: BASE_WORKFLOW_INFO                                    */
+/*==============================================================*/
+create table BASE_WORKFLOW_INFO (
+   SID                  nvarchar(50)         not null,
+   ITEM_TYPE            nvarchar(50)         null,
+   STATUS_NAME          nvarchar(50)         null,
+   STATUS_CODE          nvarchar(50)         null,
+   HANDLE_RESULT        nvarchar(50)         null,
+   NEXT_STATUS_NAME     nvarchar(50)         null,
+   NEXT_STATUS_CODE     nvarchar(50)         null,
+   TIME_LIMIT           int                  null,
+   constraint PK_BASE_WORKFLOW_INFO primary key (SID)
+)
+go
+
+if exists (select 1 from  sys.extended_properties
+           where major_id = object_id('BASE_WORKFLOW_INFO') and minor_id = 0)
+begin 
+   declare @CurrentUser sysname 
+select @CurrentUser = user_name() 
+execute sp_dropextendedproperty 'MS_Description',  
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO' 
+ 
+end 
+
+
+select @CurrentUser = user_name() 
+execute sp_addextendedproperty 'MS_Description',  
+   '所有公示完毕后，一个动作是备案归档；一个动作下一个流程企业请拨？？？？？', 
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_WORKFLOW_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'ITEM_TYPE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO', 'column', 'ITEM_TYPE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '项目类别；合同类、评审类、普惠类',
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO', 'column', 'ITEM_TYPE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_WORKFLOW_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'STATUS_NAME')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO', 'column', 'STATUS_NAME'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '当前状态名称',
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO', 'column', 'STATUS_NAME'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_WORKFLOW_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'STATUS_CODE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO', 'column', 'STATUS_CODE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '当前状态代码',
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO', 'column', 'STATUS_CODE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_WORKFLOW_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'HANDLE_RESULT')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO', 'column', 'HANDLE_RESULT'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '处理结果；1通过；2驳回',
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO', 'column', 'HANDLE_RESULT'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_WORKFLOW_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'NEXT_STATUS_NAME')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO', 'column', 'NEXT_STATUS_NAME'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '下一状态名称',
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO', 'column', 'NEXT_STATUS_NAME'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_WORKFLOW_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'NEXT_STATUS_CODE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO', 'column', 'NEXT_STATUS_CODE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '下一状态代码',
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO', 'column', 'NEXT_STATUS_CODE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('BASE_WORKFLOW_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'TIME_LIMIT')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO', 'column', 'TIME_LIMIT'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '工作时效单位天；0不限制；',
+   'user', @CurrentUser, 'table', 'BASE_WORKFLOW_INFO', 'column', 'TIME_LIMIT'
+go
+
+/*==============================================================*/
+/* Table: CORPORATION_BASE_INFO                                 */
+/*==============================================================*/
+create table CORPORATION_BASE_INFO (
+   SID                  nvarchar(50)         not null,
+   CREATE_DT            DATE                 null,
+   CREATE_BY            nvarchar(50)         null,
+   UPDATE_DT            DATE                 null,
+   UPDATE_BY            nvarchar(50)         null,
+   CORP_NAME            nvarchar(100)        null,
+   SOCIAL_CREDIT_CODE   nvarchar(100)        null,
+   REGISTERED_ADDRESS   nvarchar(300)        null,
+   LEGAL_PERSON         nvarchar(100)        null,
+   LEGAL_PERSON_PHONE   nvarchar(100)        null,
+   OPERATOR             nvarchar(100)        null,
+   OPERATOR_PHONE       nvarchar(100)        null,
+   OPERATOR_ID_NO       nvarchar(100)        null,
+   EMIAL                nvarchar(100)        null,
+   REGISTERED_CAPITAL   nvarchar(100)        null,
+   USER_NAME            nvarchar(50)         null,
+   PASSWORD             nvarchar(50)         null,
+   constraint PK_CORPORATION_BASE_INFO primary key (SID)
+)
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'CREATE_DT')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'CREATE_DT'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '创建时间',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'CREATE_DT'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'CREATE_BY')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'CREATE_BY'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '创建人',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'CREATE_BY'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'UPDATE_DT')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'UPDATE_DT'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '修改时间',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'UPDATE_DT'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'UPDATE_BY')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'UPDATE_BY'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '修改人',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'UPDATE_BY'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'CORP_NAME')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'CORP_NAME'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '企业名称',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'CORP_NAME'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'SOCIAL_CREDIT_CODE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'SOCIAL_CREDIT_CODE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '统一社会信用代码
+   ',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'SOCIAL_CREDIT_CODE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'REGISTERED_ADDRESS')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'REGISTERED_ADDRESS'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '注册地址',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'REGISTERED_ADDRESS'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'LEGAL_PERSON')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'LEGAL_PERSON'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '法人代表',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'LEGAL_PERSON'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'LEGAL_PERSON_PHONE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'LEGAL_PERSON_PHONE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '法人联系方式',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'LEGAL_PERSON_PHONE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'OPERATOR')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'OPERATOR'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '经办人',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'OPERATOR'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'OPERATOR_PHONE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'OPERATOR_PHONE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '经办人联系方式',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'OPERATOR_PHONE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'OPERATOR_ID_NO')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'OPERATOR_ID_NO'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '经办人证件号码',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'OPERATOR_ID_NO'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'EMIAL')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'EMIAL'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '电子邮箱',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'EMIAL'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'REGISTERED_CAPITAL')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'REGISTERED_CAPITAL'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '注册资本',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'REGISTERED_CAPITAL'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'USER_NAME')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'USER_NAME'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '用户名',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'USER_NAME'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('CORPORATION_BASE_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'PASSWORD')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'PASSWORD'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '密码',
+   'user', @CurrentUser, 'table', 'CORPORATION_BASE_INFO', 'column', 'PASSWORD'
+go
+
+/*==============================================================*/
+/* Table: POLICY_MAIN_INFO                                      */
+/*==============================================================*/
+create table POLICY_MAIN_INFO (
+   SID                  nvarchar(50)         not null,
+   CREATE_DT            date                 null,
+   CREATE_BY            nvarchar(50)         null,
+   UPDATE_DT            date                 null,
+   UPDATE_BY            nvarchar(50)         null,
+   APPLY_NUMBER         nvarchar(50)         null,
+   STATUS_NAME          nvarchar(50)         null,
+   STATUS_CODE          nvarchar(50)         null,
+   CORPORATION_SID      nvarchar(50)         null,
+   CORP_NAME            nvarchar(100)        null,
+   SOCIAL_CREDIT_CODE   nvarchar(100)        null,
+   REGISTERED_ADDRESS   nvarchar(300)        null,
+   LEGAL_PERSON         nvarchar(100)        null,
+   LEGAL_PERSON_PHONE   nvarchar(100)        null,
+   OPERATOR             nvarchar(100)        null,
+   OPERATOR_PHONE       nvarchar(100)        null,
+   OPERATOR_ID_NO       nvarchar(100)        null,
+   EMIAL                nvarchar(100)        null,
+   REGISTERED_CAPITAL   nvarchar(100)        null,
+   APPLY_ITEM_TYPE      nvarchar(50)         null,
+   APPLY_ITEM_NAME      nvarchar(50)         null,
+   APPLY_MONEY_WORDS    nvarchar(50)         null,
+   APPLY_MONEY_NUMBER   float                null,
+   APPLY_DT             date                 null,
+   APPLY_STATUS         nvarchar(50)         null,
+   constraint PK_POLICY_MAIN_INFO primary key (SID)
+)
+go
+
+if exists (select 1 from  sys.extended_properties
+           where major_id = object_id('POLICY_MAIN_INFO') and minor_id = 0)
+begin 
+   declare @CurrentUser sysname 
+select @CurrentUser = user_name() 
+execute sp_dropextendedproperty 'MS_Description',  
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO' 
+ 
+end 
+
+
+select @CurrentUser = user_name() 
+execute sp_addextendedproperty 'MS_Description',  
+   '需将企业信息冗余，避免后期企业修改基础信息', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'CREATE_DT')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'CREATE_DT'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '创建时间',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'CREATE_DT'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'CREATE_BY')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'CREATE_BY'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '创建人',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'CREATE_BY'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'UPDATE_DT')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'UPDATE_DT'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '修改时间',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'UPDATE_DT'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'UPDATE_BY')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'UPDATE_BY'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '修改人',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'UPDATE_BY'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'APPLY_NUMBER')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'APPLY_NUMBER'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '申请编号',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'APPLY_NUMBER'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'STATUS_NAME')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'STATUS_NAME'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '申请数据当前状态',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'STATUS_NAME'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'STATUS_CODE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'STATUS_CODE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '申请数据状态编码',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'STATUS_CODE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'CORPORATION_SID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'CORPORATION_SID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '企业SID',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'CORPORATION_SID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'CORP_NAME')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'CORP_NAME'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '企业名称',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'CORP_NAME'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'SOCIAL_CREDIT_CODE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'SOCIAL_CREDIT_CODE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '统一社会信用代码
+   ',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'SOCIAL_CREDIT_CODE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'REGISTERED_ADDRESS')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'REGISTERED_ADDRESS'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '注册地址',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'REGISTERED_ADDRESS'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'LEGAL_PERSON')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'LEGAL_PERSON'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '法人代表',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'LEGAL_PERSON'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'LEGAL_PERSON_PHONE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'LEGAL_PERSON_PHONE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '法人联系方式',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'LEGAL_PERSON_PHONE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'OPERATOR')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'OPERATOR'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '经办人',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'OPERATOR'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'OPERATOR_PHONE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'OPERATOR_PHONE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '经办人联系方式',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'OPERATOR_PHONE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'OPERATOR_ID_NO')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'OPERATOR_ID_NO'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '经办人证件号码',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'OPERATOR_ID_NO'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'EMIAL')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'EMIAL'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '电子邮箱',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'EMIAL'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'REGISTERED_CAPITAL')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'REGISTERED_CAPITAL'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '注册资本',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'REGISTERED_CAPITAL'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'APPLY_ITEM_TYPE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'APPLY_ITEM_TYPE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '申请政策兑现类别',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'APPLY_ITEM_TYPE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'APPLY_ITEM_NAME')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'APPLY_ITEM_NAME'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '申请政策兑现项目',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'APPLY_ITEM_NAME'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'APPLY_MONEY_WORDS')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'APPLY_MONEY_WORDS'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '申请金额（万元）（大写）',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'APPLY_MONEY_WORDS'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'APPLY_MONEY_NUMBER')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'APPLY_MONEY_NUMBER'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '申请金额（万元）（数字）',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'APPLY_MONEY_NUMBER'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'APPLY_DT')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'APPLY_DT'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '申请日期',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'APPLY_DT'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'APPLY_STATUS')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'APPLY_STATUS'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '保存；提交；',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO', 'column', 'APPLY_STATUS'
+go
+
+/*==============================================================*/
+/* Table: POLICY_MAIN_INFO_DETAIL                               */
+/*==============================================================*/
+create table POLICY_MAIN_INFO_DETAIL (
+   SID                  nvarchar(50)         not null,
+   CREATE_DT            date                 null,
+   CREATE_BY            nvarchar(50)         null,
+   UPDATE_DT            date                 null,
+   UPDATE_BY            nvarchar(50)         null,
+   POLICY_SID           nvarchar(50)         null,
+   FILE_NAME            nvarchar(100)        null,
+   FILE_COUNT           int                  null,
+   PATENT_NUMBER        nvarchar(50)         null,
+   FILE_PATH            nvarchar(500)        null,
+   FILE_NAME2           nvarchar(500)        null,
+   constraint PK_POLICY_M_I_DETAIL primary key (SID)
+)
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO_DETAIL')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'CREATE_DT')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'CREATE_DT'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '创建时间',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'CREATE_DT'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO_DETAIL')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'CREATE_BY')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'CREATE_BY'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '创建人',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'CREATE_BY'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO_DETAIL')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'UPDATE_DT')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'UPDATE_DT'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '修改时间',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'UPDATE_DT'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO_DETAIL')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'UPDATE_BY')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'UPDATE_BY'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '修改人',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'UPDATE_BY'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO_DETAIL')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'POLICY_SID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'POLICY_SID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '申请政策信息sid',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'POLICY_SID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO_DETAIL')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FILE_NAME')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'FILE_NAME'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '材料名称',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'FILE_NAME'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO_DETAIL')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FILE_COUNT')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'FILE_COUNT'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '材料件数',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'FILE_COUNT'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO_DETAIL')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FILE_PATH')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'FILE_PATH'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '文件路径',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'FILE_PATH'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_MAIN_INFO_DETAIL')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FILE_NAME2')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'FILE_NAME2'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '文件名称',
+   'user', @CurrentUser, 'table', 'POLICY_MAIN_INFO_DETAIL', 'column', 'FILE_NAME2'
+go
+
+/*==============================================================*/
+/* Table: POLICY_STATUS_CHANGE                                  */
+/*==============================================================*/
+create table POLICY_STATUS_CHANGE (
+   SID                  nvarchar(50)         not null,
+   POLICY_SID           nvarchar(50)         null,
+   DEPT_LEVEL           nvarchar(50)         null,
+   ITEM_TYPE            nvarchar(50)         null,
+   STATUS_NAME          nvarchar(50)         null,
+   STATUS_CODE          nvarchar(50)         null,
+   CREATE_DT            nvarchar(50)         null,
+   HANDLE_SID           nvarchar(50)         null,
+   HANDLE_DT            nvarchar(50)         null,
+   HANDLE_RESULT        nvarchar(50)         null,
+   HANDLE_CONTENT       nvarchar(2000)       null,
+   IS_HANDLE            nvarchar(50)         null,
+   IS_CALCULATE         nvarchar(50)         null,
+   CALCULATE_DT         date                 null,
+   constraint PK_POLICY_STATUS_CHANGE primary key (SID)
+)
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_STATUS_CHANGE')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'DEPT_LEVEL')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'DEPT_LEVEL'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '处理人部门级别',
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'DEPT_LEVEL'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_STATUS_CHANGE')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'ITEM_TYPE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'ITEM_TYPE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '项目类别',
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'ITEM_TYPE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_STATUS_CHANGE')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'STATUS_NAME')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'STATUS_NAME'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '状态名称',
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'STATUS_NAME'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_STATUS_CHANGE')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'STATUS_CODE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'STATUS_CODE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '状态编码',
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'STATUS_CODE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_STATUS_CHANGE')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'CREATE_DT')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'CREATE_DT'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '记录创建时间',
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'CREATE_DT'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_STATUS_CHANGE')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'HANDLE_SID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'HANDLE_SID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '处理人sid',
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'HANDLE_SID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_STATUS_CHANGE')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'HANDLE_DT')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'HANDLE_DT'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '处理时间',
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'HANDLE_DT'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_STATUS_CHANGE')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'HANDLE_RESULT')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'HANDLE_RESULT'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '处理结果；1通过、2驳回',
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'HANDLE_RESULT'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_STATUS_CHANGE')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'HANDLE_CONTENT')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'HANDLE_CONTENT'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '处理意见',
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'HANDLE_CONTENT'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_STATUS_CHANGE')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'IS_HANDLE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'IS_HANDLE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '是否处理',
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'IS_HANDLE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_STATUS_CHANGE')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'IS_CALCULATE')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'IS_CALCULATE'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '是否已计算时效',
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'IS_CALCULATE'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('POLICY_STATUS_CHANGE')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'CALCULATE_DT')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'CALCULATE_DT'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '计算时间',
+   'user', @CurrentUser, 'table', 'POLICY_STATUS_CHANGE', 'column', 'CALCULATE_DT'
+go
+
+/*==============================================================*/
+/* Table: SYS_DEPT                                              */
+/*==============================================================*/
+create table SYS_DEPT (
+   DEPT_CODE            nvarchar(50)         collate Chinese_PRC_CI_AS not null,
+   DEPT_NAME            nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   PARENT_CODE          nvarchar(50)         collate Chinese_PRC_CI_AS not null,
+   C_ICO                nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   STATUS_FLAG          char(1)              collate Chinese_PRC_CI_AS null,
+   DEL_FLAG             char(1)              collate Chinese_PRC_CI_AS null,
+   NOTE                 nvarchar(200)        collate Chinese_PRC_CI_AS null,
+   DEPT_ORDER           numeric              null,
+   DEPT_FLAG            numeric              null,
+   ROLE_ID              nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   constraint PK_SYS_DEPT primary key (DEPT_CODE)
+         on "PRIMARY"
+)
+go
+
+/*==============================================================*/
+/* Table: SYS_MENU                                              */
+/*==============================================================*/
+create table SYS_MENU (
+   MENU_ID              nvarchar(50)         collate Chinese_PRC_CI_AS not null,
+   MENU_NAME            nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   C_ICO                nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   AREA                 nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   CONTROLLER           nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   ACTION               nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   PARENT_ID            nvarchar(50)         collate Chinese_PRC_CI_AS not null,
+   MENU_LEVEL           numeric              not null,
+   MENU_ORDER           numeric              null,
+   GIS_ORDER            char(1)              collate Chinese_PRC_CI_AS null,
+   ISSHOW_FLAG          char(1)              collate Chinese_PRC_CI_AS null,
+   DEFMENU_ID           nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   constraint PK_SYS_MENU primary key (MENU_ID)
+         on "PRIMARY"
+)
+go
+
+/*==============================================================*/
+/* Table: SYS_MENUOPT                                           */
+/*==============================================================*/
+create table SYS_MENUOPT (
+   MENUOPT_ID           nvarchar(50)         collate Chinese_PRC_CI_AS not null,
+   MENUOPT_NAME         nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   MENU_ID              nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   C_ICO                nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   AREA                 nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   CONTROLLER           nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   ACTION               nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   NOTE                 nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   constraint PK_SYS_MENUOPT primary key (MENUOPT_ID)
+         on "PRIMARY"
+)
+go
+
+/*==============================================================*/
+/* Table: SYS_ROLE                                              */
+/*==============================================================*/
+create table SYS_ROLE (
+   ROLE_ID              nvarchar(50)         collate Chinese_PRC_CI_AS not null,
+   NAME                 nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   NOTE                 nvarchar(200)        collate Chinese_PRC_CI_AS null,
+   constraint PK_SYS_ROLE primary key (ROLE_ID)
+         on "PRIMARY"
+)
+go
+
+/*==============================================================*/
+/* Table: SYS_ROLE_MENUOPT_MAP                                  */
+/*==============================================================*/
+create table SYS_ROLE_MENUOPT_MAP (
+   ROLE_MENUOPT_ID      nvarchar(50)         collate Chinese_PRC_CI_AS not null,
+   ROLE_ID              nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   MENUOPT_ID           nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   constraint PK_SYS_ROLE_MENUOPT_MAP primary key (ROLE_MENUOPT_ID)
+         on "PRIMARY"
+)
+go
+
+/*==============================================================*/
+/* Table: SYS_ROLE_MENU_MAP                                     */
+/*==============================================================*/
+create table SYS_ROLE_MENU_MAP (
+   ROLE_MENU_ID         nvarchar(50)         collate Chinese_PRC_CI_AS not null,
+   ROLE_ID              nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   MENU_ID              nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   constraint PK_SYS_ROLE_MENU_MAP primary key (ROLE_MENU_ID)
+         on "PRIMARY"
+)
+go
+
+/*==============================================================*/
+/* Table: SYS_USER                                              */
+/*==============================================================*/
+create table SYS_USER (
+   USER_NAME            nvarchar(50)         collate Chinese_PRC_CI_AS not null,
+   PASSWORD             nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   DEPT_CODE            nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   UPDATE_DATE          date                 null,
+   UPDATE_USER          nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   NOTE                 nvarchar(255)        collate Chinese_PRC_CI_AS null,
+   MANAGE_DEPT_CODE     nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   ZSNAME               nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   constraint PK_SYS_USER primary key (USER_NAME)
+         on "PRIMARY"
+)
+go
+
+/*==============================================================*/
+/* Table: SYS_USER_DEFAULTMENU                                  */
+/*==============================================================*/
+create table SYS_USER_DEFAULTMENU (
+   USER_DEFAULT_ID      nvarchar(50)         collate Chinese_PRC_CI_AS not null,
+   USER_NAME            nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   MENU_ID              nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   constraint PK_SYS_USER_DEFAULTMENU primary key (USER_DEFAULT_ID)
+         on "PRIMARY"
+)
+go
+
+/*==============================================================*/
+/* Table: SYS_USER_ROLE_MAP                                     */
+/*==============================================================*/
+create table SYS_USER_ROLE_MAP (
+   USER_ROLE_ID         nvarchar(50)         collate Chinese_PRC_CI_AS not null,
+   USER_NAME            nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   ROLE_ID              nvarchar(50)         collate Chinese_PRC_CI_AS null,
+   constraint PK_SYS_USER_ROLE_MAP primary key (USER_ROLE_ID)
+         on "PRIMARY"
+)
+go
+
+alter table BASE_PROJECT_CONFIG
+   add constraint FK_BASE_PRO_REFERENCE_BASE_PRO foreign key (PROJECT_SID)
+      references BASE_PROJECT_INFO (SID)
+go
+
+alter table POLICY_MAIN_INFO_DETAIL
+   add constraint FK_POLICY_M_RE_POLICY_M foreign key (POLICY_SID)
+      references POLICY_MAIN_INFO (SID)
+go
+
+alter table POLICY_STATUS_CHANGE
+   add constraint FK_POLICY_S_REFERENCE_POLICY_M foreign key (POLICY_SID)
+      references POLICY_MAIN_INFO (SID)
+go
+
+alter table SYS_ROLE_MENUOPT_MAP
+   add constraint SYS_ROLE_MENUOPT_MAP_FK_MENOPT foreign key (MENUOPT_ID)
+      references SYS_MENUOPT (MENUOPT_ID)
+go
+
+alter table SYS_ROLE_MENUOPT_MAP
+   add constraint SYS_ROLE_MENUOPT_MAP_FK_ROLE foreign key (ROLE_ID)
+      references SYS_ROLE (ROLE_ID)
+go
+
+alter table SYS_ROLE_MENU_MAP
+   add constraint SYS_ROLE_MENU_MAP_FK_MENU foreign key (MENU_ID)
+      references SYS_MENU (MENU_ID)
+go
+
+alter table SYS_ROLE_MENU_MAP
+   add constraint SYS_ROLE_MENU_MAP_FK_ROLE foreign key (ROLE_ID)
+      references SYS_ROLE (ROLE_ID)
+go
+
+alter table SYS_USER
+   add constraint SYS_USER_FK_ID foreign key (DEPT_CODE)
+      references SYS_DEPT (DEPT_CODE)
+go
+
+alter table SYS_USER_DEFAULTMENU
+   add constraint USER_DEFAULT_MENU_FKID foreign key (MENU_ID)
+      references SYS_MENU (MENU_ID)
+go
+
+alter table SYS_USER_DEFAULTMENU
+   add constraint USER_DEFAULT_UESER_FKID foreign key (USER_NAME)
+      references SYS_USER (USER_NAME)
+go
+
+alter table SYS_USER_ROLE_MAP
+   add constraint SYS_USER_ROLE_MAP_FK_ROLE foreign key (ROLE_ID)
+      references SYS_ROLE (ROLE_ID)
+go
+
+alter table SYS_USER_ROLE_MAP
+   add constraint SYS_USER_ROLE_MAP_FK_USER foreign key (USER_NAME)
+      references SYS_USER (USER_NAME)
+go

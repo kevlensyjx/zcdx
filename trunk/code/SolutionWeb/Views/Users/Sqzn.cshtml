@@ -1,0 +1,102 @@
+﻿@{
+    ViewBag.Title = "申请事项";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<script type="text/javascript">
+    var openIndex = 0;
+    function loadInit() {
+        var table = layui.table;
+        table.render({
+            elem: '#sqxnlist',
+            url: '/api/Users/ItemList',
+            method: 'post',
+            page: {
+                layout: ['count', 'prev', 'page', 'next'],
+                theme: '#1E9FFF',
+                groups: 5,
+                prev: '上一页',
+                next: '下一页'
+            },
+            request: {
+                limitName: 'rows'
+            },
+            response: {
+                countName: 'total',
+                dataName: 'rows'
+            },
+            width:760,
+            cols: [[
+              { field: 'ITEM_CODE', width: 80, title: '编码' },
+              { field: 'ITEM_TYPE', width: 80, title: '类别' },
+              { field: 'ITEM_NAME', width: 480, title: '项目名称' },
+              { fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemo' }
+            ]],
+            id: 'searchId'
+        });
+        var active = {
+            reload: function(){
+                table.reload('searchId', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                  ,where: {
+                      ITEM_TYPE: $('#item_type').val(),
+                      ITEM_NAME: $('#item_name').val()
+                  }
+                });
+            }
+        };
+
+        $('.searchDiv .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //监听工具条
+        table.on('tool(sqxnlist)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if (layEvent === 'detail') { //查看
+                layer.open({
+                    type: 2,
+                    title: data.ITEM_TYPE+"-"+data.ITEM_NAME,
+                    shadeClose: true,
+                    shade: 0.5,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['890px', '600px'],
+                    content: "/Content/Pdf/" + data.ITEM_CODE+".pdf"
+                });
+            } else if (layEvent === 'pass') { 
+                location.href = "/COMPANY/Apply/Zxsq?code=" + data.ITEM_CODE;
+            }
+        });
+    }
+
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="pass">申请</a>
+</script>
+<div class="box_t">
+    <div class="box-ttt"><span>申请事项</span></div>
+</div>
+<div class="layui-form layui-form-pane searchDiv">
+    <div class="layui-input-inline" style="width: 100px;">
+        <select id="item_type">
+            <option value=""></option>
+            <option value="评审类">评审类</option>
+            <option value="合同类">合同类</option>
+            <option value="普惠类">普惠类</option>
+        </select>
+    </div>
+    <div class="layui-inline" style="width: 260px;">
+        <input class="layui-input" id="item_name" placeholder="项目名称" autocomplete="off">
+    </div>
+    <button class="layui-btn layui-btn-normal" data-type="reload">查询</button>
+</div>
+<table class="layui-hide" id="sqxnlist" lay-filter="sqxnlist"></table>
+
+

@@ -1,0 +1,79 @@
+﻿
+<!DOCTYPE html>
+
+<html>
+<head>
+
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Content/layui/layui.all.js"></script>
+    <script src="~/Content/JS/user.js"></script>
+    <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Content/Css/company/index.css" rel="stylesheet" />
+
+    <script type="text/javascript">
+        $(function () {
+            var menuName = "@ViewBag.MenuName";
+            $("#" + menuName.toLowerCase()).addClass("dh-xz");
+        });
+    </script>
+
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div >
+        <div id="top">
+            <div class="top-0">
+                <div class="top-l"></div>
+
+                <div class="top-r" id="dlover">
+                    @if (ViewBag.CompanyName != "")
+                    {
+                        <span>欢迎您：@ViewBag.CompanyName</span><span>|</span><span><a  href="#" id="showCompany">企业信息</a></span><span>|</span><span><a href="#" id="editPass">修改密码</a></span><span>|</span><span><a href="#" id="loginOut">注销登录</a></span>
+                    }
+                    else
+                    {
+                        <span><a href="/Users/CompanyLogin" target="_self">企业登录</a></span><span>|</span><span><a href="/Users/CompanyRegister" target="_self">企业注册</a></span>
+                    }
+                </div>
+            </div>
+        </div>
+        <div style="clear: both"></div>
+        <div id="banner">
+            <div class="banner-0">
+                <div class="banner-0-left"><img src="~/Content/images/banner.png"  width="1000" height="120" /></div>
+            </div>
+        </div>
+
+        <div id="dh1">
+            <ul>
+                <li id="index"><a href="/Users/Index" target="_self">首&nbsp;&nbsp;页</a></li>
+                <li id="sqzn"><a href="/Users/Sqzn" target="_self">申请事项</a></li>
+                <li id="zxsq"><a href="/COMPANY/Apply/Zxsq" target="_self">在线申请</a></li>
+                <li id="bjcx"><a href="/COMPANY/Apply/Bjcx" target="_self">办件查询</a></li>
+                <li id="tzgg"><a href="/Users/Tzgg" target="_self">通知公告</a></li>
+                <li id="xxgs"><a href="/Users/Xxgs" target="_self">信息公示</a></li>
+            </ul>
+        </div>
+    </div>
+
+        <div class="center">
+            <div style="float:left;width:230px;">
+                <ul>
+                    <li><a href="/Users/ht" target="_self"><img src="~/Content/images/HT.png" style="border:0px;height:80px;width:230px;" /></a></li>
+                    <li style="margin-top:7px;margin-bottom:7px;"><a href="/Users/ph" target="_self"><img src="~/Content/images/PH.png" style="border:0px;height:80px;width:230px;" /></a></li>
+                    <li><a href="/Users/ps" target="_self"><img src="~/Content/images/PS.png" style="border:0px;height:80px;width:230px;" /></a></li>
+                </ul>
+            </div>
+            <div style="float:right;width:760px;">@RenderBody()</div>
+        </div>
+        <div id="foot" ><div class="foot-text">主办单位：山西转型综合改革示范区<br />协办单位：山西中网信息产业股份有限公司</div></div>
+</body>
+</html>

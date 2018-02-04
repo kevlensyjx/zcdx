@@ -1,0 +1,64 @@
+﻿@{
+    ViewBag.Title = "项目管理";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    function loadExt(viewModel, funcName) {
+        if (funcName == "afterLoad") {
+            
+            var Project_Dept_type = [
+                { "id": "牵头部门", "text": "牵头部门" },
+                { "id": "会审部门", "text": "会审部门" },
+            ]
+            viewModel.extA(Project_Type_object);
+            viewModel.extB(Project_Cash_object);
+            viewModel.extC(Project_Dept_type);
+            loadGrid(viewModel.urls.mylist());
+        }
+    }
+    function loadGrid(listurl) {
+        $('#data_grid').datagrid({
+            url: listurl,
+            pagination: true,
+            pageSize: 20,
+            pageList: [10, 20, 30, 40, 50],
+            fit: true,
+            fitColumns: false,
+            nowrap: false,
+            rownumbers: true,
+            singleSelect: true,
+            border: 0,
+            idField: 'SID',
+            columns: [[
+                { title: '类别', field: 'ITEM_TYPE', width: 100, align: 'center' },
+                { title: '项目名称', field: 'ITEM_NAME', width: 300, halign: 'center', align: 'left' },
+                { title: '兑现方式', field: 'CASHING_WAY', width: 100, align: 'center' },
+                { title: '牵头部门', field: 'DEPT_TYPE', width: 100, align: 'center' },
+                { title: '会审部门', field: 'DEPT_NAME', width: 500, align: 'center' }
+
+            ]] 
+        });
+
+    }
+</script>
+
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'north',border:false" style="float: left; overflow: hidden; padding: 3px;">
+        <table class="z-selectbar">
+            <tr>
+                <td>
+                    &nbsp;合同类型&nbsp;<input style="width: 320px" data-bind="comboboxSource: extA, comboboxValue: searchForm.ITEM_TYPE" data-options="editable: false, valueField: 'id', textField: 'text'" />
+
+                    <span id="s-toolbar"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div data-options="region:'center',border:false" style="border-top: 1px solid #8db2e3">
+        <table id="data_grid"></table>
+    </div>
+</div>
+ 
+

@@ -1,0 +1,170 @@
+﻿
+@{
+    Layout = null;
+    var jsonModel = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Content/layui/layui.all.js"></script>
+    <script src="~/Content/JS/user.js"></script>
+    <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Content/Css/company/index.css" rel="stylesheet" />
+
+    <script type="text/javascript">
+        $(function () {
+            var initModel = JSON.parse('@jsonModel');
+            $("#APPLY_NUMBER").html("编号："+initModel.APPLY_NUMBER);
+            $("#CORP_NAME").html(initModel.CORP_NAME);
+            $("#SOCIAL_CREDIT_CODE").html(initModel.SOCIAL_CREDIT_CODE);
+            $("#REGISTERED_ADDRESS").html(initModel.REGISTERED_ADDRESS);
+            $("#LEGAL_PERSON").html(initModel.LEGAL_PERSON);
+            $("#LEGAL_PERSON_PHONE").html(initModel.LEGAL_PERSON_PHONE);
+            $("#OPERATOR").html(initModel.OPERATOR);
+            $("#OPERATOR_PHONE").html(initModel.OPERATOR_PHONE);
+            $("#OPERATOR_ID_NO").html(initModel.OPERATOR_ID_NO);
+            $("#EMIAL").html(initModel.EMIAL);
+            $("#REGISTERED_CAPITAL").html(initModel.REGISTERED_CAPITAL);
+            $("#APPLY_ITEM_NAME").html(initModel.APPLY_ITEM_TYPE + "-" + initModel.APPLY_ITEM_NAME);
+            $("#APPLY_MONEY_WORDS").html(initModel.APPLY_MONEY_WORDS);
+            $("#APPLY_MONEY_NUMBER").html(initModel.APPLY_MONEY_NUMBER);
+            $("#APPLY_ITEM_TYPE").html(initModel.APPLY_ITEM_TYPE);
+            $("#CREATE_DT").html(initModel.CREATE_DT.split('T')[0]);
+            
+            getFiles(initModel.SID);
+        });
+        function getFiles(main_sid) {
+            $.ajax({
+                url: '/api/COMPANY/Apply/FileList',
+                type: "POST",
+                data: { "MAIN_SID": main_sid },
+                dataType: "JSON",
+                success: function succCallback(result, textStatus) {//回调成功,
+                    if (result.Statu == "1") {
+                        $(result.Data).each(
+                        function (index) {
+
+                            var tr = '<tr id="upload-' + index + '" style="height:25px;">'
+                                + '<td style="padding:5px;">' + result.Data[index].DOCUMENT_NAME + '</td>'
+                                + '<td style="padding:5px;">' + result.Data[index].PATENT_NUMBER + '</td>'
+                                + '<td style="padding:5px;">'
+                                + '<button class="layui-btn layui-btn-xs layui-btn-danger" onclick="showImg(\'' + result.Data[index].FILE_PATH + '\')">预览</button>'
+                                + '</td>'
+                                + '</tr>';
+                            $("#uploadList").append(tr);
+
+                        });
+                    }
+                }
+            });
+        }
+        function showImg(imgpath) {
+            layer.open({
+                type: 2,
+                title: "证件预览",
+                shadeClose: true,
+                shade: 0.5,
+                maxmin: true,
+                area: ['860px', '570px'],
+                content: "/Content/ZoomPic/index.html?pic=" + imgpath
+            });
+        }
+    </script>
+
+    <title></title>
+</head>
+<body>
+    <h2 style="width:820px;text-align:center;margin: 5px auto;">山西转型综合改革示范区政策兑现事项申请表</h2>
+    <h3 style="width:820px;text-align:center;margin: 5px auto;" id="APPLY_NUMBER"></h3>
+    
+    <table class="layui-table" style="width:820px;margin: 10px auto;">
+        <colgroup>
+            <col width="130">
+            <col width="300">
+            <col width="90">
+            <col width="300">
+        </colgroup>
+        <tbody>
+            <tr>
+                <td style="text-align:center;">企业名称</td>
+                <td id="CORP_NAME"></td>
+                <td style="text-align:center;">统一社会<br/>信用代码</td>
+                <td id="SOCIAL_CREDIT_CODE"></td>
+            </tr>
+            <tr>
+                <td style="text-align:center;">企业注册地址</td>
+                <td colspan="3"  id="REGISTERED_ADDRESS"></td>
+            </tr>
+            <tr>
+                <td style="text-align:center;">法定代表人</td>
+                <td id="LEGAL_PERSON"></td>
+                <td style="text-align:center;">联系电话</td>
+                <td id="LEGAL_PERSON_PHONE"></td>
+            </tr>
+            <tr>
+                <td style="text-align:center;">经办人</td>
+                <td id="OPERATOR"></td>
+                <td style="text-align:center;">联系电话</td>
+                <td id="OPERATOR_PHONE"></td>
+            </tr>
+            <tr>
+                <td style="text-align:center;">经办人证件号码</td>
+                <td id="OPERATOR_ID_NO"></td>
+                <td style="text-align:center;">邮    箱</td>
+                <td id="EMIAL"></td>
+            </tr>
+            <tr>
+                <td style="text-align:center;">注册资本</td>
+                <td colspan="3" id="REGISTERED_CAPITAL"></td>
+            </tr>
+            <tr>
+                <td style="text-align:center;">申请政策<br />兑现项目</td>
+                <td colspan="3" id="APPLY_ITEM_NAME"></td>
+            </tr>
+            <tr>
+                <td style="text-align:center;">申请金额(万元)</td>
+                <td id="APPLY_MONEY_WORDS"></td>
+                <td style="text-align:center;">小写</td>
+                <td id="APPLY_MONEY_NUMBER"></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <table class="layui-table" style="width: 800px;text-align:center;">
+                        <thead>
+                            <tr>
+                                <th style="width: 300px;text-align:center;">文件名称</th>
+                                <th style="width: 300px;text-align:center;">文件编号</th>
+                                <th style="text-align:center;">预览</th>
+                            </tr>
+                        </thead>
+                        <tbody id="uploadList"></tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center;">企业承诺</td>
+                <td colspan="3">
+                    1.本企业郑重承诺《山西转型综合改革示范区政策兑现事项申请表(<span id="APPLY_ITEM_TYPE"></span>)》中所填报的信息及所提供的材料均真实、准确、有效，对所提供材料，依法承担法律责任。<br />
+                    2.本企业郑重承诺收到的奖励金额将按照国家有关财务会计制度及时做好账务处理，如果产生任何经济和法律责任均由本公司承担。<br />
+                    3.本企业郑重承诺上年度未受到环保、安监部门的行政处罚，未被工商部门列入经营异常名录，且并无不良信用记录和违规营业行为。<br />
+                    <div style='margin-right: 20px;text-align:right' id="CREATE_DT"> </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
+
+

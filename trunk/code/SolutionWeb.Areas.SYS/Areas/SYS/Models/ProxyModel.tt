@@ -1,0 +1,5 @@
+﻿ <#@include file="$(SolutionDir)\SolutionWeb.Common\CodeTemplates\ProxyModel.ttinclude"#>  
+<#
+	   string[] dllurls={"SolutionWeb.Model.SYS/bin/Debug/SolutionWeb.Model.SYS.dll"};
+       Create(dllurls);
+#>

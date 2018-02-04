@@ -1,0 +1,100 @@
+﻿@{
+    ViewBag.Title = "信息公示";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+
+<script type="text/javascript">
+    var laypage = layui.laypage;
+    function loadInit() {
+        GetList(1);
+        $('#search_but').click(function () {
+            GetList(1);
+        });
+    }
+
+    function GetList(pageIndex) {
+        var _this = ""
+        var clone_this = "";
+        _this = $("#gslist");//数据列表容器，
+        clone_this = _this.clone(true);
+        var pageSize = 10;//每页展示的条数
+        $.ajax({
+            url: "/api/Users/XxgsList",//后端处理数据，返回json格式
+            type: "POST",
+            data: { "page": pageIndex, "rows": pageSize, "APPLY_ITEM_TYPE": $('#item_type').val(), "APPLY_ITEM_NAME": $('#item_name').val() },
+            dataType: "JSON",
+            async: false,//异步锁定，默认为true
+            success: function (json) {
+                if (json.total > 0) //数据总条数
+                {
+                    _this.html("");
+                    for (var i = 0; i < json.rows.length ; i++) {
+                        var html = "<li  onclick='show_Content(\"" + json.rows[i].SID + "\",\"" + json.rows[i].APPLY_ITEM_NAME + "\")'>" + json.rows[i].CORP_NAME + json.rows[i].APPLY_ITEM_TYPE + json.rows[i].APPLY_ITEM_NAME + "审批通过<span>" + json.rows[i].POLICITY_BEGIN_DT.split('T')[0] + "至" + json.rows[i].POLICITY_END_DT.split('T')[0] + "</span></li>";
+                        _this.append(html);
+                    }
+                }
+                else {
+                    _this.html("");
+                    _this.append("");
+                }
+                jsonpage(json, pageIndex, pageSize);
+            }
+        });
+    }
+
+    function jsonpage(json, pageIndex, pageSize) {
+        var coun = json.total;//总数据条数
+        var pagecount = coun % pageSize == 0 ? coun / pageSize : coun / pageSize + 1;//计算多少页
+        laypage.render({
+            elem: 'project_page'
+            , count: coun
+            , theme: '#1E9FFF',
+            curr: pageIndex,//初始化当前页
+            groups: 5
+            , layout: ['prev', 'page', 'next']
+            , jump: function (obj, first) {
+                if (!first) { //点击跳页触发函数自身，并传递当前页：obj.curr
+                    GetList(obj.curr);
+                }
+            }
+        });
+    }
+    function show_Content(sid, title) {
+        layer.open({
+            type: 2,
+            title: title,
+            shadeClose: true,
+            shade: 0.5,
+            maxmin: true,
+            area: ['890px', '550px'],
+            content: "/Users/Xxgsxx/" + sid
+        });
+    }
+</script>
+
+<div class="box_t">
+    <div class="box-ttt"><span>信息公示</span></div>
+</div>
+
+<div class="layui-form layui-form-pane searchDiv">
+    <div class="layui-input-inline" style="width: 100px;">
+        <select id="item_type">
+            <option value=""></option>
+            <option value="评审类">评审类</option>
+            <option value="合同类">合同类</option>
+            <option value="普惠类">普惠类</option>
+        </select>
+    </div>
+    <div class="layui-inline" style="width: 260px;">
+        <input class="layui-input" id="item_name" placeholder="项目名称" autocomplete="off">
+    </div>
+    <button class="layui-btn layui-btn-normal" data-type="reload" id="search_but">查询</button>
+</div>
+<div class="ggtable">
+    <ol id="gslist"></ol>
+</div>
+<div id="project_page" style="float:right;"></div>
+
+
+
